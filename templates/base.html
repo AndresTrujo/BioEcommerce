@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    {% load static %}
+    <title>
+      {% block title %}
+        BioNutrex | Shop
+      {% endblock %}
+    </title>
+    <link rel="stylesheet" href="{% static 'dist/styles.css' %}" />
+    {% block styles %}
+
+    {% endblock %}
+  </head>
+  <body class="block">
+    {% block carrito %}
+
+    {% endblock %}
+
+    {% block banner %}
+
+    {% endblock %}
+    <header class="shadow absolute top-0 left-0 w-full z-20">
+      {% include 'includes/nav.html' %}
+    </header>
+    <main class="mx-auto">
+      {% block content %}
+
+      {% endblock %}
+    </main>
+    <footer>
+      {% include 'includes/footer.html' %}
+      <div class="container mx-auto p-4 text-center">
+        <p class="text-gray-400">@2025 Quantum Code Ltd. Tdos los derechos reservados.</p>
+      </div>
+    </footer>
+    {% block scriptsJS %}
+
+    {% endblock %}
+  </body>
+</html>

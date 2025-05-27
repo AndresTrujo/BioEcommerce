@@ -1,0 +1,230 @@
+<!--footer start-->
+{% load static %}
+    <div class="bg-white py-12 px-6 sm:py-16 lg:py-20">
+      <div
+        class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-y-8 lg:gap-x-16"
+      >
+        <div class="space-y-4">
+          <h2
+            id="contactanos"
+            class="text-2xl font-bold text-blue-900 tracking-tight sm:text-3xl"
+          >
+            CONTÁCTANOS
+          </h2>
+          <p class="text-base text-gray-700">
+            Expertos en suplementación deportiva. Distribuimos las marcas #1 del
+            mercado para potenciar tu entrenamiento.
+          </p>
+          <div class="mt-2 space-y-2">
+            <p class="text-sm font-semibold text-gray-900">Contáctanos vía:</p>
+            <p class="text-indigo-600 font-medium text-lg">
+              admin.bionutrexmx@gmail.com
+            </p>
+          </div>
+          <div class="mt-4 space-y-2">
+            <p class="text-sm font-semibold text-gray-900">Síguenos</p>
+            <div class="flex flex-col space-y-1">
+              <a
+                href="#"
+                class="flex items-center text-gray-600 hover:text-blue-700"
+              >
+                Facebook
+              </a>
+              <a
+                href="#"
+                class="flex items-center text-gray-600 hover:text-blue-700"
+              >
+                Instagram
+              </a>
+            </div>
+          </div>
+        </div>
+        <form class="space-y-6">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-4">
+            <div>
+              <label
+                for="nombre"
+                class="block text-sm font-medium text-gray-700"
+                >Nombre</label
+              >
+              <div class="mt-1 relative rounded-md shadow-sm">
+                <div
+                  class="pointer-events-none absolute inset-y-0 left-0 pl-3 flex items-center"
+                >
+                  <svg
+                    class="h-5 w-5 text-gray-400"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                    aria-hidden="true"
+                  >
+                    <path
+                      fill-rule="evenodd"
+                      d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
+                      clip-rule="evenodd"
+                    />
+                  </svg>
+                </div>
+                <input
+                  type="text"
+                  name="nombre"
+                  id="nombre"
+                  class="focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 sm:text-sm border-gray-300 rounded-md"
+                  placeholder="Ingresa tu nombre..."
+                />
+              </div>
+            </div>
+            <div>
+              <label
+                for="apellido"
+                class="block text-sm font-medium text-gray-700"
+                >Apellido</label
+              >
+              <div class="mt-1 relative rounded-md shadow-sm">
+                <input
+                  type="text"
+                  name="apellido"
+                  id="apellido"
+                  class="focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                  placeholder="Ingresa tu apellido..."
+                />
+              </div>
+            </div>
+          </div>
+          <div>
+            <label
+              for="correo-electronico"
+              class="block text-sm font-medium text-gray-700"
+              >Correo electrónico</label
+            >
+            <div class="mt-1 relative rounded-md shadow-sm">
+              <div
+                class="pointer-events-none absolute inset-y-0 left-0 pl-3 flex items-center"
+              >
+                <svg
+                  class="h-5 w-5 text-gray-400"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                  aria-hidden="true"
+                >
+                  <path
+                    d="M3 4a2 2 0 00-2 2v1.161A7 7 0 019.482 15.6M5 12.04l3.945-2.091A7 7 0 0117 5.96v5a2 2 0 01-2 2H3z"
+                  />
+                </svg>
+              </div>
+              <input
+                type="email"
+                name="correo-electronico"
+                id="correo-electronico"
+                class="focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 sm:text-sm border-gray-300 rounded-md"
+                placeholder="Ingresa tu correo electrónico..."
+              />
+            </div>
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-4">
+            <div>
+              <label
+                for="nombre-compania"
+                class="block text-sm font-medium text-gray-700"
+                >Nombre de la compañía</label
+              >
+              <div class="mt-1 relative rounded-md shadow-sm">
+                <div
+                  class="pointer-events-none absolute inset-y-0 left-0 pl-3 flex items-center"
+                >
+                  <svg
+                    class="h-5 w-5 text-gray-400"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                    aria-hidden="true"
+                  >
+                    <path
+                      fill-rule="evenodd"
+                      d="M4 4a2 2 0 012-2h8a2 2 0 012 2v2h-2V4H6v2H4V4zm10 4a2 2 0 012-2h2v4h-2v-2H10v2h2v-4h-2v2H8v-2H6v4H8v-2h2v2H4v-4h2v2H10v-2h2zM6 9a1 1 0 011-1h2a1 1 0 110 2H7a1 1 0 01-1-1zm4 0a1 1 0 011-1h2a1 1 0 110 2h-2a1 1 0 01-1-1z"
+                      clip-rule="evenodd"
+                    />
+                  </svg>
+                </div>
+                <input
+                  type="text"
+                  name="nombre-compania"
+                  id="nombre-compania"
+                  class="focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 sm:text-sm border-gray-300 rounded-md"
+                  placeholder="Nombre empresarial..."
+                />
+              </div>
+            </div>
+            <div>
+              <label
+                for="intereses"
+                class="block text-sm font-medium text-gray-700"
+                >Intereses</label
+              >
+              <div class="mt-1 relative rounded-md shadow-sm">
+                <div
+                  class="pointer-events-none absolute inset-y-0 left-0 pl-3 flex items-center"
+                >
+                  <svg
+                    class="h-5 w-5 text-gray-400"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                    aria-hidden="true"
+                  >
+                    <path
+                      fill-rule="evenodd"
+                      d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z"
+                      clip-rule="evenodd"
+                    />
+                  </svg>
+                </div>
+                <input
+                  type="text"
+                  name="intereses"
+                  id="intereses"
+                  class="focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 sm:text-sm border-gray-300 rounded-md"
+                  placeholder="Tus Intereses..."
+                />
+              </div>
+            </div>
+          </div>
+          <div>
+            <label for="mensaje" class="block text-sm font-medium text-gray-700"
+              >Mensaje</label
+            >
+            <div class="mt-1 relative rounded-md shadow-sm">
+              <div
+                class="pointer-events-none absolute inset-y-0 left-0 pl-3 flex items-center"
+              >
+                <svg
+                  class="h-5 w-5 text-gray-400"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                  aria-hidden="true"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 011 2H4a1 1 0 01-1-1z"
+                    clip-rule="evenodd"
+                  />
+                </svg>
+              </div>
+              <textarea
+                rows="4"
+                name="mensaje"
+                id="mensaje"
+                class="focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 sm:text-sm border-gray-300 rounded-md"
+                placeholder="Tu mensaje..."
+              ></textarea>
+            </div>
+          </div>
+          <div>
+            <button
+              type="submit"
+              class="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-700 hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+            >
+              Enviar
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+    <!--footer end-->

@@ -1,0 +1,271 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}
+  My products
+{% endblock %}
+
+{% block styles %}
+  <style>
+    /* Custom styles to manage accordion state */
+    .accordion-content {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.25s ease-in-out;
+    }
+    
+    .accordion-active .accordion-content {
+      max-height: 500px;
+      /* Adjust as needed */
+    }
+    
+    .product-card {
+      @apply h-100 w-full mb-8 bg-white flex flex-col items-center rounded-lg shadow-md overflow-hidden;
+      max-width: min(100%, 350px);
+      /* Added max-width */
+    }
+    
+    .product-card img {
+      @apply object-cover h-55 w-30 mx-auto; /* Added mx-auto for horizontal centering */
+      max-height: 200px;
+      /* Added max-height */
+    }
+    
+    .product-card .text-container {
+      @apply w-full h-20 text-black pt-2;
+    }
+  </style>
+{% endblock %}
+
+{% block banner %}
+  <section class="h-screen bg-[url('/static/img/heroimg.jpeg')] bg-cover bg-center bg-no-repeat">
+    <div class="bottom-container h-full w-full flex flex-col justify-end items-center text-white px-5 pb-10 | lg:flex-row lg:items-end lg:justify-center lg:pb-10">
+      <div class="flex text-center text-3xl font-bold | lg:w-[60%] lg:text-start lg:text-6xl">
+        <h1>DESCUBRE LO MEJOR DE LA SUPLEMENTACIÓN</h1>
+      </div>
+      <div class="flex flex-col justify-end items-center text-center pb-10 [&>p]:text-lg [&>p]:mb-3 [&>a]:bg-[#FFFFFF] [&>a]:text-black [&>a]:rounded-3xl [&>a]:px-5 [&>a]:py-2 [&>a]:text-sm | lg:items-end lg:pb-0 lg:w-[40%] lg:text-end lg:[&>p]:text-2xl">
+        <p>Mejores precios, alta calidad, compromiso con tu salud.</p>
+        <a href="#">Comprar ahora</a>
+      </div>
+    </div>
+  </section>
+{% endblock %}
+
+{% block carrito %}
+  <div class="block" id="cartBlock">
+    <div id="carrito" class="hidden flex flex-col justify-center items-center w-full h-auto bg-[#1E1E1E] text-white fixed top-0 left-0 z-20 transition-transform duration-300 transform">
+      <div class="w-full h-20 flex justify-between items-start px-5 bg-[#1E1E1E]">
+        <h2 class="text-lg font-semibold">Carrito de Compras</h2>
+        <button id="closeCart" class="text-white hover:text-gray-400">X</button>
+      </div>
+      <div class="carrin w-full h-auto max-h-[300px] overflow-y-auto p-5">
+        <!-- Aquí se agregarán los productos dinámicamente -->
+      </div>
+      <h1 class="hidden" id="defaultmsgc">No has añadido productos aún</h1>
+      <!-- Contenedor para el total -->
+      <div class="w-full px-5 py-3 bg-gray-800 flex justify-between items-center">
+        <span class="text-lg font-semibold">Total:</span>
+        <span id="totalPrice" class="text-lg font-semibold">$0.00</span>
+      </div>
+      <!-- Botón de checkout -->
+      <button id="checkoutBtn" class="bg-green-500 text-white px-5 py-2 mt-3 rounded hover:bg-green-600 mb-5">Checkout</button>
+    </div>
+    <!-- carrito fin -->
+  </div>
+{% endblock %}
+
+{% block content %}
+  <!-- NUEVA COLECCIÓN START -->
+  <div class="lg:h-300 h-auto min-h-[calc(410px*0.75)] w-full bg-linear-to-bl from-[#675CF5] to-[#05004F] flex flex-col items-center text-white py-10">
+    <div>
+      <h1 class="text-white text-4xl md:text-5xl text-center pt-2 md:pt-4 font-bold">NUEVA COLECCIÓN</h1>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 w-full mt-4 md:mt-6 px-5 lg:px-10">
+      <!-- carta de productos -->
+      {% for product in first_three %}
+        <a href="{% url 'products:product_detail' product.ID_PRODUCTO %}">
+          <div class="product-card bg-white w-full h-full flex flex-col justify-between items-center p-5 rounded shadow">
+            <div class="w-full flex flex-row justify-between items-start">
+              <h3 class="text-[#070065] text-lg">{{ rand_cat.CAT_NOMBRE }}</h3>
+              <a href="#"><img class="object-contain h-7 w-7" src="{% static 'img/shop-cart.svg' %}" alt="Agregar al carrito" /></a>
+            </div>
+            <div class="w-full h-48 flex items-center justify-center overflow-hidden">
+              <img class="object-contain max-h-full max-w-full" src="{% static 'img/citrato.png' %}" alt="{{ product.PROD_NOMBRE }}" />
+            </div>
+            <div class="text-container flex flex-col justify-start items-start w-full break-words">
+              <h2 class="font-regular text-lg text-black break-words">{{ product.PROD_NOMBRE }}</h2>
+              <p class="font-regular text-sm text-gray-500 mt-1">Precio</p>
+              <p class="font-regular text-lg text-black">${{ product.PROD_PRECIO_PUB }}</p>
+            </div>
+          </div>
+        </a>
+      {% endfor %}
+    </div>
+  </div>
+  <!-- NUEVA COLECCIÓN END -->
+  <div class="mx-auto p-4 flex" id="product-list">
+    <aside class="w-1/4 p-4">
+      <h2 class="font-bold">Categorías:</h2>
+      <ul>
+        {% for category in categories %}
+          <li class="mb-2">
+            <a href="{% url 'products:product_list_by_category' category.CAT_SLUG %}#product-list" class="!text-blue-600 hover:!underline">{{ category.CAT_NOMBRE }}</a>
+          </li>
+        {% endfor %}
+      </ul>
+    </aside>
+    <div class="w-full p-4">
+      {% if category %}
+        <h2 class="font-bold mb-4">{{ category.CAT_NOMBRE }}</h2>
+      {% else %}
+        <h2 class="font-bold mb-4">All Products:</h2>
+      {% endif %}
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {% for product in products %}
+          <a href="{% url 'products:product_detail' product.ID_PRODUCTO %}">
+            <div>
+              <div class="product-card bg-white w-full max-w-sm flex flex-col justify-between items-center p-5 rounded shadow">
+                <div class="w-full h-48 flex items-center justify-center overflow-hidden">
+                  {% if product.PROD_IMAGEN %}
+                    <img src="{{ product.PROD_IMAGEN.url }}" alt="{{ product.PROD_NOMBRE }}" class="max-h-30" />
+                  {% else %}
+                    <p>La imagen no esta disponible</p>
+                  {% endif %}
+                </div>
+                <div class="text-container flex flex-col justify-start items-start w-full break-words">
+                  <h2 class="font-semibold text-lg text-black break-words">{{ product.PROD_NOMBRE }}</h2>
+                  <p class="font-regular text-sm text-gray-500 mt-1">Precio</p>
+                  <p class="font-regular text-lg text-indigo-600">${{ product.PROD_PRECIO_PUB }}</p>
+                </div>
+              </div>
+            </div>
+          </a>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+{% endblock %}
+
+{% block ScriptsJS %}
+  <script>
+    let menuMobile = document.getElementById('menu-mobile')
+    let ham_menu = document.getElementById('ham_menu')
+    
+    menuMobile.addEventListener('click', function () {
+      ham_menu.classList.toggle('hidden')
+    })
+  </script>
+  <script>
+    function updatePrice(value) {
+      document.getElementById('minPrice').textContent = '$' + value
+    }
+    function updatePriceDesk(value) {
+      document.getElementById('minPriceDesk').textContent = '$' + value
+    }
+    
+    document.addEventListener('DOMContentLoaded', () => {
+      const accordions = document.querySelectorAll('.accordion')
+    
+      accordions.forEach((accordion) => {
+        const toggle = accordion.querySelector('.accordion-toggle')
+        const content = accordion.querySelector('.accordion-content')
+    
+        toggle.addEventListener('click', () => {
+          accordion.classList.toggle('accordion-active')
+          if (accordion.classList.contains('accordion-active')) {
+            content.style.maxHeight = content.scrollHeight + 'px'
+          } else {
+            content.style.maxHeight = 0
+          }
+        })
+      })
+    })
+    
+    const carrito = document.getElementById('carrito')
+    const shoppingCart = document.getElementById('shopping-cart')
+    const closeBtn = document.getElementById('closeCart')
+    const defaultmsgc = document.getElementById('defaultmsgc')
+    const carrin = document.querySelector('.carrin')
+    const addItemBtns = document.querySelectorAll('.add-to-cart')
+    
+    shoppingCart.addEventListener('click', (e) => {
+      e.preventDefault()
+      carrito.classList.toggle('hidden')
+    })
+    
+    closeBtn.addEventListener('click', () => {
+      carrito.classList.add('hidden')
+    })
+    
+    addItemBtns.forEach((btn) => {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault()
+        const productCard = e.target.closest('.product-card')
+        const nomProdElement = productCard?.querySelector('.nomProd')
+        const nomProd = nomProdElement ? nomProdElement.textContent : 'Producto sin nombre'
+        const precProdElement = productCard?.querySelector('.precProd')
+        const precProdValue = precProdElement ? precProdElement.textContent : 'Precio no disponible'
+    
+        const itemCart = `
+                    <div class="cart-item flex justify-between items-center mb-4 border-b border-gray-600 pb-2">
+                        <span>${nomProd}</span>
+                        <span>${precProdValue}</span>
+                        <div class="quantity-controls flex items-center">
+                            <button class="decrement-btn bg-gray-700 text-white px-2 py-1 rounded">-</button>
+                            <span class="quantity mx-2">1</span>
+                            <button class="increment-btn bg-gray-700 text-white px-2 py-1 rounded">+</button>
+                        </div>
+                        <button class="remove-button text-red-500 hover:text-red-700">Eliminar</button>
+                    </div>`
+    
+        carrin.innerHTML += itemCart
+        carrito.classList.remove('hidden')
+        defaultmsgc.classList.add('hidden')
+    
+        // Adjunta los event listeners a los botones de cantidad y eliminar
+        attachQuantityListeners()
+        attachRemoveListeners()
+      })
+    })
+    
+    function attachQuantityListeners() {
+      const cartItems = carrin.querySelectorAll('.cart-item')
+      cartItems.forEach((item) => {
+        const incrementBtn = item.querySelector('.increment-btn')
+        const decrementBtn = item.querySelector('.decrement-btn')
+        const quantitySpan = item.querySelector('.quantity')
+    
+        incrementBtn.addEventListener('click', () => {
+          let quantity = parseInt(quantitySpan.textContent)
+          quantity++
+          quantitySpan.textContent = quantity
+          /* logica para el precio total */
+        })
+    
+        decrementBtn.addEventListener('click', () => {
+          let quantity = parseInt(quantitySpan.textContent)
+          if (quantity > 1) {
+            quantity--
+            quantitySpan.textContent = quantity
+            /* logica para el precio total  */
+          }
+        })
+      })
+    }
+    
+    function attachRemoveListeners() {
+      const removeButtons = carrin.querySelectorAll('.remove-button')
+      removeButtons.forEach((button) => {
+        button.addEventListener('click', (event) => {
+          event.target.closest('.cart-item').remove()
+          if (carrin.children.length === 0) {
+            defaultmsgc.classList.remove('hidden')
+          }
+        })
+      })
+    }
+    
+    // Llama a attachRemoveListeners inicialmente en caso de que haya elementos preexistentes en el carrito (si es aplicable)
+    attachRemoveListeners()
+  </script>
+{% endblock %}

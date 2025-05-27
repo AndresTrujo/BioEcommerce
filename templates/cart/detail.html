@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block Title %}
+  Mi Carrito
+{% endblock %}
+
+{% block styles %}
+  <style>
+    .cart-remove-btn {
+      background-color: #dc2626 !important; /* Tailwind red-600 */
+      color: #fff !important;
+    }
+  </style>
+{% endblock %}
+
+{% block content %}
+  <div class="conteiner mt-20">
+    <h2 class="text-2xl font-semibold mb-4">Mi Carrito</h2>
+
+    {% if cart %}
+      <ul class="space-y-4">
+        {% for item in cart.items.all %}
+          <li class="flex items-center p-4 overflow-visible">
+            <div class="w-32 flex-shrink-0 flex justify-center items-center">
+              {% if item.product.PROD_IMAGEN %}
+                <img src="{{ item.product.PROD_IMAGEN.url }}" alt="{{ item.product.PROD_NOMBRE }}" class="w-28 h-28 object-contain" />
+              {% else %}
+                <img src="{% static 'img/citrato.png' %}" alt="{{ item.product.PROD_NOMBRE }}" class="w-28 h-28 object-contain" />
+              {% endif %}
+            </div>
+            <div class="flex-grow min-w-0 ml-4 overflow-visible">
+              <h3>{{ item.product.PROD_NOMBRE }}</h3>
+              <p>{{ item.product.PROD_DESCRIPCION }}</p>
+              <p>Cantidad: {{ item.quantity }}</p>
+              <div class="flex-shrink mt-2">
+                <form action="" method="post">
+                  {% csrf_token %}
+                  <button type="submit" class="cart-remove-btn px-4 py-2 rounded">X</button>
+                </form>
+              </div>
+            </div>
+          </li>
+          <!-- TODO: MODIFICAR REGLA BASE DE Tailwind -->
+        {% endfor %}
+      </ul>
+    {% endif %}
+  </div>
+{% endblock %}
