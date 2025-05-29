@@ -9,9 +9,13 @@
   <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
 {% endblock %}
 
+{% block banner %}
+  <section class="h-[72px]"></section>
+{% endblock %}
+
 {% block content %}
   <!-- btn return start -->
-  <div class="flex items-center pl-5 mt-20">
+  <div class="flex items-center pl-5 pt-5 gap-2 | lg:gap-5">
     <div class="btn">
       <a href="{% url 'products:landing_page' %}"><img class="w-5" src="{% static 'img/arrow-left.svg' %}" alt="" /></a>
     </div>
@@ -22,74 +26,71 @@
   <!-- btn return end -->
 
   <!-- product detail start -->
-  <div class="w-screen px-5 mt-20 flex flex-col gap-5 | lg:flex-row">
-    <div class="left lg:w-1/2 flex justify-center items-center">
-      <!-- Imagen de prod -->
-      {% if product.PROD_IMAGEN %}
-        <img src="{{ product.PROD_IMAGEN.url }}" alt="{{ product.PROD_NOMBRE }}" srcset="" />
-      {% else %}
-        <img src="{% static '/img/citrato.png' %}" alt="" />
-      {% endif %}
+  <div class="w-screen h-1/2 px-5 flex flex-col gap-5| lg:flex-row">
+    <div class="left lg:w-1/2 flex flex-row justify-center items-center">
+      <div class="p-5 justify-center items-center flex">
+        <!-- Imagen de prod -->
+        {% if product.PROD_IMAGEN %}
+          <img src="{{ product.PROD_IMAGEN.url }}" alt="{{ product.PROD_NOMBRE }}" class="w-1/2 object-fill" />
+        {% else %}
+          <img src="{% static '/img/citrato.png' %}" alt="" />
+        {% endif %}
+      </div>
     </div>
-    <div class="right lg:w-1/2">
-      <!-- Nombre del producto -->
-      <h3 class="text-2xl | sm:text-4xl | md:text-5xl | lg:text-4xl">{{ product.PROD_NOMBRE }}</h3>
-      <!-- Gramaje o contenid del producto -->
-      <p class="text-md mt-1 | sm:text-lg | md:text-sm">{{ product.PROD_GRAMAJE }} mg</p>
-      <!-- Descripción corta del producto -->
-      <p class="text-md mt-1 | sm:text-lg | md:text-sm">{{ product.CONTENIDO_PZS }}</p>
-      <div class="precio flex items-center gap-2 mt-5 mb-2">
-        <!-- Precio del producto -->
-        <p class="text-lg font-bold | sm:text-2xl |">${{ product.PROD_PRECIO_PUB }}</p>
-      </div>
-      <hr />
-      <!-- Variante del producto -->
-      <!-- Variante cambia dependiendo el tipo de producto -->
-      <p class="text-md mt-10">Cápsulas:</p>
-      <div class="selector inline-flex space-x-2 mt-5">
-        <label class="relative">
-          <input type="radio" name="capsulas" value="60" class="peer sr-only" />
-          <!-- opcion del selector que aparece en navegador -->
-          <span class="px-4 py-1 bg-[#D9D9D9] text-black transition cursor-pointer peer-checked:bg-white peer-checked:border-b-3">{{ product.CONTENIDO_PZS }}</span>
-        </label>
-      </div>
-      <div class="w-full h-15 mt-5 flex gap-1 | sm:h-11 sm:gap-2">
-        <!-- Contador de num de productos -->
-        <div class="w-1/2 border border-[#9E9E9E] border-2 | sm:w-1/5"></div>
-        <!-- Add to shopping car btn -->
-        <!-- Se desplegará carrito de compras -->
-        <a href="#" class="w-1/2 border bg-black text-white flex items-center justify-center transition hover:bg-[#686868] | sm:w-4/5">Añadir al carrito</a>
-      </div>
-      <div class="w-full mt-2 flex">
-        <!-- btn que dirigirá al checkout -->
-        <form action="{% url 'cart:cart_add' product.ID_PRODUCTO %}" method="post" id="add-to-cart-form" class="w-full h-15 sm:h-11">
-          {% csrf_token %}
-          <button type="submit" class="w-full h-15 sm:h-11 bg-[#0D00BD] flex justify-center items-center text-white">Comprar ahora</button>
-          <p id="message"></p>
-        </form>
-      </div>
-
-      <!-- acordion -->
-      <div className="acordion-container ">
-        <div class="accordion-header mt-10 flex items-center justify-between text-[#6D6D6D] cursor-pointer">
-          <span class="font-semibold text-xl">Detalles</span>
-          <i class="bx bx-chevron-down"></i>
+    <div class="right lg:w-1/2 flex flex-col">
+      <div class="p-5">
+        <!-- Nombre del producto -->
+        <h3 class="text-2xl | sm:text-4xl | md:text-5xl | lg:text-4xl">{{ product.PROD_NOMBRE }}</h3>
+        <!-- Gramaje o contenid del producto -->
+        <p class="text-md mt-1 | sm:text-lg | md:text-sm">{{ product.PROD_GRAMAJE }} mg</p>
+        <!-- Descripción corta del producto -->
+        <p class="text-md mt-1 | sm:text-lg | md:text-sm">{{ product.CONTENIDO_PZS }}</p>
+        <div class="precio flex items-center gap-2 mt-5 mb-2">
+          <!-- Precio del producto -->
+          <p class="text-lg font-bold | sm:text-2xl |">${{ product.PROD_PRECIO_PUB }}</p>
         </div>
-        <div class="accordion-body border-t-2 border-[#6D6D6D] max-h-0 overflow-hidden transition-all duration-200 ease-out">
-          <div class="p-2 [&>ul>li]:text-[#6D6D6D]">
-            <!-- Detalle de producto > Cada punto se pone dentro del "li" -->
-            <ul>
-              <li>Presentacion: {{ product.PROD_DESCRIPCION }}</li>
-            </ul>
+        <hr />
+        <div class="w-full h-15 mt-5 flex gap-1 | sm:h-11 sm:gap-2">
+          <!-- Add to shopping car btn -->
+          <!-- Se desplegará carrito de compras -->
+          <div class="w-full flex">
+            <!-- btn que dirigirá al checkout -->
+            <form action="{% url 'cart:cart_add' product_id=product.ID_PRODUCTO %}" method="post" id="add-to-cart-form" class="w-full h-15 sm:h-11">
+              {% csrf_token %}
+              <button type="submit" class="w-full h-15 sm:h-11 bg-black flex justify-center items-center text-white transition hover:bg-[#686868] mb-2">Añadir al carrito</button>
+            </form>
           </div>
         </div>
-        <div class="accordion-header mt-10 flex items-center justify-between text-[#6D6D6D] cursor-pointer">
-          <span class="font-semibold text-xl">Envíos</span>
-          <i class="bx bx-chevron-down"></i>
+        <div class="w-full mt-2 flex">
+          <!-- btn que dirigirá al checkout -->
+          <form action="{% url 'cart:cart_add' product_id=product.ID_PRODUCTO %}" method="post" class="w-full h-15 sm:h-11">
+            {% csrf_token %}
+            <button type="submit" class="w-full h-15 sm:h-11 bg-[#0D00BD] flex justify-center items-center text-white">Comprar ahora</button>
+          </form>
         </div>
-        <div class="accordion-body max-h-0 overflow-hidden transition-all duration-200 ease-out">
-          <div class="p-2 [&>ul>li]:text-[#6D6D6D]">
-            <ul></ul>
+
+        <!-- acordion -->
+        <div className="acordion-container ">
+          <div class="accordion-header mt-10 flex items-center justify-between text-[#6D6D6D] cursor-pointer">
+            <span class="font-semibold text-xl">Detalles</span>
+            <i class="bx bx-chevron-down"></i>
+          </div>
+          <div class="accordion-body border-t-2 border-[#6D6D6D] max-h-0 overflow-hidden transition-all duration-200 ease-out">
+            <div class="p-2 [&>ul>li]:text-[#6D6D6D]">
+              <!-- Detalle de producto > Cada punto se pone dentro del "li" -->
+              <ul>
+                <li>Presentacion: {{ product.PROD_DESCRIPCION }}</li>
+              </ul>
+            </div>
+          </div>
+          <div class="accordion-header mt-10 flex items-center justify-between text-[#6D6D6D] cursor-pointer">
+            <span class="font-semibold text-xl">Envíos</span>
+            <i class="bx bx-chevron-down"></i>
+          </div>
+          <div class="accordion-body max-h-0 overflow-hidden transition-all duration-200 ease-out">
+            <div class="p-2 [&>ul>li]:text-[#6D6D6D]">
+              <ul></ul>
+            </div>
           </div>
         </div>
       </div>
@@ -137,6 +138,7 @@
       </div>
     </div>
   </div>
+
   <!-- Reseñas end -->
   <!-- Prod sugerencias start -->
   <div class="prod-sugerencias-container w-screen px-5 mt-20">
@@ -163,7 +165,7 @@
 {% endblock %}
 
 {% block scriptsJS %}
-{% comment %}   <script>
+  <script>
     document.getElementById('add-to-cart-form').addEventListener('submit', function (event) {
       event.preventDefault()
       const form = event.target
@@ -178,7 +180,7 @@
       })
         .then((response) => response.json())
         .then((data) => {
-          console.log(data);
+          console.log(data)
           const messageElement = document.getElementById('message')
           if (data.success) {
             messageElement.textContent = data
@@ -208,8 +210,8 @@
       })
     })
   </script>
- {% endcomment %}
-{% comment %}   <script>
+
+  {% comment %} <script>
     const botonesCapsulas = document.querySelectorAll('.selector-capsulas button')
     const imagenProducto = document.getElementById('imagen-producto')
     const nombreProducto = document.getElementById('nombre-producto')

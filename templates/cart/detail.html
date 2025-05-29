@@ -1,49 +1,65 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block Title %}
-  Mi Carrito
+{% block title %}
+  Mi Carrito | BioNutrex
 {% endblock %}
+
+
+{% block banner %}
+  <section class="h-[72px]"></section>
+{% endblock %}
+
 
 {% block styles %}
   <style>
-    .cart-remove-btn {
+    .remove-btn {
       background-color: #dc2626 !important; /* Tailwind red-600 */
       color: #fff !important;
     }
   </style>
 {% endblock %}
 
-{% block content %}
-  <div class="conteiner mt-20">
-    <h2 class="text-2xl font-semibold mb-4">Mi Carrito</h2>
-
-    {% if cart %}
-      <ul class="space-y-4">
-        {% for item in cart.items.all %}
-          <li class="flex items-center p-4 overflow-visible">
-            <div class="w-32 flex-shrink-0 flex justify-center items-center">
-              {% if item.product.PROD_IMAGEN %}
-                <img src="{{ item.product.PROD_IMAGEN.url }}" alt="{{ item.product.PROD_NOMBRE }}" class="w-28 h-28 object-contain" />
-              {% else %}
-                <img src="{% static 'img/citrato.png' %}" alt="{{ item.product.PROD_NOMBRE }}" class="w-28 h-28 object-contain" />
-              {% endif %}
-            </div>
-            <div class="flex-grow min-w-0 ml-4 overflow-visible">
-              <h3>{{ item.product.PROD_NOMBRE }}</h3>
-              <p>{{ item.product.PROD_DESCRIPCION }}</p>
-              <p>Cantidad: {{ item.quantity }}</p>
-              <div class="flex-shrink mt-2">
-                <form action="" method="post">
-                  {% csrf_token %}
-                  <button type="submit" class="cart-remove-btn px-4 py-2 rounded">X</button>
-                </form>
+{% block carrito %}
+  <div class="mt-5 py-5 block" id="cartBlock">
+    <div id="carrito" class="flex flex-col justify-center items-center w-full h-auto bg-[#1E1E1E] text-white top-10 left-10 transition-transform duration-300 transform">
+      <div class="w-full h-20 flex justify-between items-start p-5 p-5 bg-[#1E1E1E]">
+        <h2 class="text-lg font-semibold">Carrito de Compras</h2>
+        <button id="closeCart" class="text-white hover:text-gray-400">X</button>
+      </div>
+      <div class="w-full h-auto max-h-[300px] overflow-y-auto p-5">
+        <!-- Aquí se agregarán los productos dinámicamente -->
+        <ul class="space y-4">
+          {% for item in cart.items.all %}
+            <li class="items-center p-4">
+              <div class="flex justify-between items-center mb-4 border-b border-gray-600 pb-2">
+                <span>{{ item.product.PROD_NOMBRE }}</span>
+                <span>{{ item.product.PROD_PRECIO_PUB }}</span>
+                <div class="flex items-center">
+                  <button class="bg-gray-800 text-white px-2 py-1 rounded">-</button>
+                  <span class="quantity mx-2">1</span>
+                  <button class="bg-gray-800 text-white px-2 py-1 rounded">+</button>
+                </div>
+                <button id="deleteItem" class="px-2 py-1 rounded bg-red-500" onclick="{% url 'cart:cart_remove' product_id=item.product.ID_PRODUCTO %}">Eliminar</button>
               </div>
-            </div>
-          </li>
-          <!-- TODO: MODIFICAR REGLA BASE DE Tailwind -->
-        {% endfor %}
-      </ul>
-    {% endif %}
+            </li>
+          {% endfor %}
+        </ul>
+      </div>
+      <!-- Contenedor para el total -->
+      <div class="w-full px-5 py-3 bg-gray-800 flex justify-between items-center">
+        <span class="text-lg font-semibold">Total:</span>
+        <span id="totalPrice" class="text-lg font-semibold">$0.00</span>
+      </div>
+      <!-- Botón de checkout -->
+      <button id="checkoutBtn" class="bg-green-500 text-white px-5 py-2 mt-3 rounded hover:bg-green-600 mb-5">Checkout</button>
+    </div>
+    <!-- carrito fin -->
   </div>
+
+  <!-- TODO: TERMINAR EL CARRITO -->
+  <!-- TODO: MANEJAR ADD Y REMOVE -->
+  <!-- TODO: MANEJAR ELIMINAR PRODUCTO -->
+  <!-- TODO: MANEJAR TOTAL DE COMPRA -->
+  <!-- TODO: MANEJAR BLOQUE DESPLAZABLE : SEPARAR DETALLE DE CARRITO DEL BLOQUE DE CARRITO HTML -->
 {% endblock %}

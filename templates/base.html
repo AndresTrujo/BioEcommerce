@@ -16,21 +16,21 @@
     {% endblock %}
   </head>
   <body class="block">
+    {% block banner %}
+
+    {% endblock %}
+
+    <header class="absolute top-0 left-0 w-full z-20">
+      {% include 'includes/nav.html' %}
+    </header>
+
     {% block carrito %}
 
     {% endblock %}
 
-    {% block banner %}
+    {% block content %}
 
     {% endblock %}
-    <header class="shadow absolute top-0 left-0 w-full z-20">
-      {% include 'includes/nav.html' %}
-    </header>
-    <main class="mx-auto">
-      {% block content %}
-
-      {% endblock %}
-    </main>
     <footer>
       {% include 'includes/footer.html' %}
       <div class="container mx-auto p-4 text-center">
