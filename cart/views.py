@@ -28,16 +28,15 @@ def cart_add(request, product_id):
         cart_item.quantity += 1
     cart_item.save()
     
-    return redirect('products:product_list_by_category', category_slug=category_slug)
+    return redirect('products:product_detail', product_id=product_id)
 
 def cart_detail(request):
     cart_id = request.session.get('cart_id')
     cart = None
     
     if cart_id:
-        try:
             cart = get_object_or_404(Cart, id=cart_id)
-        except Cart.DoesNotExist:
+    if not cart or not cart.items.exists():
             cart = None
     
     context = {
@@ -53,3 +52,37 @@ def cart_remove(request, product_id):
     item.delete()
     
     return redirect('cart:cart_detail')
+
+
+def cart_item_add(request, product_id):
+    cart_id = request.session.get('cart_id')
+    if not cart_id:
+        return JsonResponse({'error': 'No cart found'}, status=404)
+    
+    cart = get_object_or_404(Cart, id=cart_id)
+    product = get_object_or_404(Producto, ID_PRODUCTO=product_id)
+    
+    cart_item, created = CartItem.objects.get_or_create(cart=cart, product=product)
+    
+    if not created:
+        cart_item.quantity += 1
+    cart_item.save()
+    
+    return JsonResponse({'message': 'Item added to cart', 'quantity': cart_item.quantity})
+
+def cart_item_remove(request, product_id):
+    cart_id = request.session.get('cart_id')
+    if not cart_id:
+        return JsonResponse({'error': 'No cart found'}, status=404)
+    
+    cart_id = request.session.get('cart_id')
+    if not cart_id:
+        return JsonResponse({'error': 'No cart found'}, status=404)
+    
+    cart = get_object_or_404(Cart, id=cart_id)
+    product = get_object_or_404(Producto, ID_PRODUCTO=product_id)
+    
+    cart_item, created = CartItem.objects.get_or_create(cart=cart, product=product)
+    
+    
+    return JsonResponse({'message': 'Item removed from cart'})

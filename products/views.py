@@ -33,6 +33,9 @@ def product_list(request, category_slug=None):
 
 def product_detail(request, id):
     product = get_object_or_404(Producto, ID_PRODUCTO=id, PROD_DISPONIBLE=True)
+    categories = Categoria.objects.all()
+    rand_cat = choice(categories)
+    first_three = Producto.objects.filter(PROD_CATEGORIA=rand_cat)[:3]
     if not product:
         print("El Producto no fue encontrado")
-    return render(request, 'products/product/detail.html', {'product': product})
+    return render(request, 'products/product/detail.html', {'product': product, 'first_three': first_three, 'rand_cat': rand_cat, 'categories': categories})

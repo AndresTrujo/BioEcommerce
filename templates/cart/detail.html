@@ -1,16 +1,9 @@
-{% extends 'base.html' %}
-{% load static %}
-
-{% block title %}
+{% extends 'base.html' %} {% load static %} {% block title %}
   Mi Carrito | BioNutrex
 {% endblock %}
-
-
 {% block banner %}
   <section class="h-[72px]"></section>
 {% endblock %}
-
-
 {% block styles %}
   <style>
     .remove-btn {
@@ -19,9 +12,8 @@
     }
   </style>
 {% endblock %}
-
 {% block carrito %}
-  <div class="mt-5 py-5 block" id="cartBlock">
+  <div class="py-5 block" id="cartBlock">
     <div id="carrito" class="flex flex-col justify-center items-center w-full h-auto bg-[#1E1E1E] text-white top-10 left-10 transition-transform duration-300 transform">
       <div class="w-full h-20 flex justify-between items-start p-5 p-5 bg-[#1E1E1E]">
         <h2 class="text-lg font-semibold">Carrito de Compras</h2>
@@ -29,22 +21,27 @@
       </div>
       <div class="w-full h-auto max-h-[300px] overflow-y-auto p-5">
         <!-- Aquí se agregarán los productos dinámicamente -->
-        <ul class="space y-4">
-          {% for item in cart.items.all %}
-            <li class="items-center p-4">
-              <div class="flex justify-between items-center mb-4 border-b border-gray-600 pb-2">
-                <span>{{ item.product.PROD_NOMBRE }}</span>
-                <span>{{ item.product.PROD_PRECIO_PUB }}</span>
-                <div class="flex items-center">
-                  <button class="bg-gray-800 text-white px-2 py-1 rounded">-</button>
-                  <span class="quantity mx-2">1</span>
-                  <button class="bg-gray-800 text-white px-2 py-1 rounded">+</button>
+        {% if cart %}
+          <ul class="space y-4">
+            {% for item in cart.items.all %}
+              <li class="items-center p-4">
+                <div class="flex justify-between items-center mb-4 border-b border-gray-600 pb-2">
+                  <span>{{ item.product.PROD_NOMBRE }}</span>
+                  <span>{{ item.product.PROD_PRECIO_PUB }}</span>
+                  <div class="flex items-center">
+                    <!-- TODO: Hacer views de Sumar y Restar cantidad de producto en cart.views -->
+                    <a href="#" class="bg-gray-800 text-white px-2 py-1 rounded">-</a>
+                    <span class="mx-2">{{ item.quantity }}</span>
+                    <a href="#" class="bg-gray-800 text-white px-2 py-1 rounded">+</a>
+                  </div>
+                  <a href="{% url 'cart:cart_remove' product_id=item.product.ID_PRODUCTO %}" class="px-2 py-1 rounded bg-red-500 text-white">Eliminar</a>
                 </div>
-                <button id="deleteItem" class="px-2 py-1 rounded bg-red-500" onclick="{% url 'cart:cart_remove' product_id=item.product.ID_PRODUCTO %}">Eliminar</button>
-              </div>
-            </li>
-          {% endfor %}
-        </ul>
+              </li>
+            {% endfor %}
+          </ul>
+        {% else %}
+          <h1>El carrito está vacío</h1>
+        {% endif %}
       </div>
       <!-- Contenedor para el total -->
       <div class="w-full px-5 py-3 bg-gray-800 flex justify-between items-center">

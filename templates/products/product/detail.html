@@ -54,7 +54,8 @@
           <!-- Add to shopping car btn -->
           <!-- Se desplegará carrito de compras -->
           <div class="w-full flex">
-            <!-- btn que dirigirá al checkout -->
+            <!-- Formulario para añadir al carrito -->
+            <!-- TODO: Funcion para confirmar la adicion, slider del carrito hacia abajo. -->
             <form action="{% url 'cart:cart_add' product_id=product.ID_PRODUCTO %}" method="post" id="add-to-cart-form" class="w-full h-15 sm:h-11">
               {% csrf_token %}
               <button type="submit" class="w-full h-15 sm:h-11 bg-black flex justify-center items-center text-white transition hover:bg-[#686868] mb-2">Añadir al carrito</button>
@@ -63,7 +64,8 @@
         </div>
         <div class="w-full mt-2 flex">
           <!-- btn que dirigirá al checkout -->
-          <form action="{% url 'cart:cart_add' product_id=product.ID_PRODUCTO %}" method="post" class="w-full h-15 sm:h-11">
+          <!-- TODO: Boton que añade al carro y redirige a Stripe -->
+          <form action="" method="post" class="w-full h-15 sm:h-11">
             {% csrf_token %}
             <button type="submit" class="w-full h-15 sm:h-11 bg-[#0D00BD] flex justify-center items-center text-white">Comprar ahora</button>
           </form>
@@ -145,18 +147,20 @@
     <p class="text-md text-[#6D6D6D] text-center">Productos sugeridos</p>
     <h3 class="text-center text-xl font-semibold">Te puede interesar</h3>
     <div class="prod-suger mt-10 flex flex-col gap-2 items-center justify-center | lg:flex-row lg:gap-5 lg:px-10">
-      {% for producto in lista_productos %}
-        <div class="prod-suger-card w-full | sm:w-100">
-          <div class="content p-4 flex flex-col">
-            <!-- Imagen producto -->
-            <div class="border-2 border-[#6D6D6D] rounded-sm">
-              <img src="{% static 'assets/img/pre-workout.png' %}" alt="" />
+      {% for item in first_three %}
+        <div class="w-full | sm:w-100">
+          <a href="{% url 'products:product_detail' item.ID_PRODUCTO %}">
+            <div class="content p-4 flex flex-col">
+              <!-- Imagen producto -->
+              <div class="border-2 border-[#6D6D6D] rounded-sm">
+                <img src="{% static '/img/pre-workout.png' %}" alt="" />
+              </div>
+              <!-- Nombre producto -->
+              <h3>{{ item.PROD_NOMBRE }} {{ item.PROD_GRAMAJE }}</h3>
+              <!-- Precio producto -->
+              <p class="text-lg font-bold">{{ item.PROD_PRECIO_PUB }}</p>
             </div>
-            <!-- Nombre producto -->
-            <h3>{{ product.PROD_NOMBRE }} {{ product.PROD_GRAMAJE }}</h3>
-            <!-- Precio producto -->
-            <p class="text-lg font-bold">{{ product.PROD_PRECIO_PUB }}</p>
-          </div>
+          </a>
         </div>
       {% endfor %}
     </div>
@@ -177,22 +181,7 @@
         headers: {
           'X-CSRFToken': formData.get('csrfmiddlewaretoken')
         }
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          console.log(data)
-          const messageElement = document.getElementById('message')
-          if (data.success) {
-            messageElement.textContent = data
-          } else {
-            messageElement.textContent = 'Error al añadir el producto al carrito.'
-          }
-        })
-        .catch((error) => {
-          console.error('Error:', error)
-          document.getElementById('message').innerText = 'Error al añadir el producto al carrito.'
-        })
-      document.getElementById('message').innerText = 'Producto añadido al carrito exitosamente.'
+      }).then((response) => response.json())
     })
   </script>
 
@@ -210,18 +199,4 @@
       })
     })
   </script>
-
-  {% comment %} <script>
-    const botonesCapsulas = document.querySelectorAll('.selector-capsulas button')
-    const imagenProducto = document.getElementById('imagen-producto')
-    const nombreProducto = document.getElementById('nombre-producto')
-    const precioProducto = document.getElementById('precio-producto')
-    
-    let menuMobile = document.getElementById('menu-mobile')
-    let ham_menu = document.getElementById('ham_menu')
-    
-    menuMobile.addEventListener('click', function () {
-      ham_menu.classList.toggle('hidden')
-    })
-  </script> {% endcomment %}
 {% endblock %}
