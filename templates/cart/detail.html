@@ -12,9 +12,9 @@
     }
   </style>
 {% endblock %}
-{% block carrito %}
+{% block content %}
   <div class="py-5 block" id="cartBlock">
-    <div id="carrito" class="flex flex-col justify-center items-center w-full h-auto bg-[#1E1E1E] text-white top-10 left-10 transition-transform duration-300 transform">
+    <div id="carrito" class="flex flex-col justify-center items-center w-full h-auto bg-[#1E1E1E] text-white">
       <div class="w-full h-20 flex justify-between items-start p-5 p-5 bg-[#1E1E1E]">
         <h2 class="text-lg font-semibold">Carrito de Compras</h2>
         <button id="closeCart" class="text-white hover:text-gray-400">X</button>
@@ -29,24 +29,31 @@
                   <span>{{ item.product.PROD_NOMBRE }}</span>
                   <span>{{ item.product.PROD_PRECIO_PUB }}</span>
                   <div class="flex items-center">
-                    <!-- TODO: Hacer views de Sumar y Restar cantidad de producto en cart.views -->
-                    <a href="#" class="bg-gray-800 text-white px-2 py-1 rounded">-</a>
-                    <span class="mx-2">{{ item.quantity }}</span>
-                    <a href="#" class="bg-gray-800 text-white px-2 py-1 rounded">+</a>
+                    <a href="#" class="bg-gray-800 text-white px-2 py-1 rounded cart-remove-btn" data-product-id="{{ item.product.ID_PRODUCTO }}">-</a>
+                    <span class="mx-2 cart-quantity">{{ item.quantity }}</span>
+                    <a href="#" class="bg-gray-800 text-white px-2 py-1 rounded cart-add-btn" data-product-id="{{ item.product.ID_PRODUCTO }}">+</a>
                   </div>
                   <a href="{% url 'cart:cart_remove' product_id=item.product.ID_PRODUCTO %}" class="px-2 py-1 rounded bg-red-500 text-white">Eliminar</a>
                 </div>
               </li>
             {% endfor %}
           </ul>
+          <h1 id="emptyCartMsg" class="text-lg font-bold" style="display:none;">El carrito está vacío</h1>
         {% else %}
-          <h1>El carrito está vacío</h1>
+          <ul id="cartItems" class="space y-4" style="display:none;"></ul>
+          <h1 id="emptyCartMsg" class="text-lg font-bold">El carrito está vacío</h1>
         {% endif %}
       </div>
       <!-- Contenedor para el total -->
       <div class="w-full px-5 py-3 bg-gray-800 flex justify-between items-center">
         <span class="text-lg font-semibold">Total:</span>
-        <span id="totalPrice" class="text-lg font-semibold">$0.00</span>
+        <span id="totalPrice" class="text-lg font-semibold">
+          ${% if cart.items.exists %}
+            {{ cart.get_total_price }}
+          {% else %}
+            0.00
+          {% endif %}
+        </span>
       </div>
       <!-- Botón de checkout -->
       <button id="checkoutBtn" class="bg-green-500 text-white px-5 py-2 mt-3 rounded hover:bg-green-600 mb-5">Checkout</button>
@@ -54,9 +61,68 @@
     <!-- carrito fin -->
   </div>
 
-  <!-- TODO: TERMINAR EL CARRITO -->
-  <!-- TODO: MANEJAR ADD Y REMOVE -->
-  <!-- TODO: MANEJAR ELIMINAR PRODUCTO -->
-  <!-- TODO: MANEJAR TOTAL DE COMPRA -->
-  <!-- TODO: MANEJAR BLOQUE DESPLAZABLE : SEPARAR DETALLE DE CARRITO DEL BLOQUE DE CARRITO HTML -->
+  <!-- TODO: Convertir esta plantilla en el detalle del carrito -->
+{% endblock %}
+
+{% block scriptsJS %}
+  <script>
+    document.querySelectorAll('.cart-add-btn').forEach((btn) => {
+      btn.addEventListener('click', function (e) {
+        e.preventDefault()
+        const productId = this.dataset.productId
+        fetch(`/cart/item/add/${productId}/`, {
+          method: 'POST',
+          headers: {
+            'X-CSRFToken': '{{ csrf_token }}',
+            Accept: 'application/json'
+          }
+        })
+          .then((res) => res.json())
+          .then((data) => {
+            if (data.quantity !== undefined) {
+              // Actualiza solo el span de cantidad de este producto
+              this.parentElement.querySelector('.cart-quantity').textContent = data.quantity
+            }
+            if (data.total !== undefined) {
+              document.getElementById('totalPrice').textContent = `$${parseFloat(data.total).toFixed(2)}`
+            }
+          })
+      })
+    })
+    
+    document.querySelectorAll('.cart-remove-btn').forEach((btn) => {
+      btn.addEventListener('click', function (e) {
+        e.preventDefault()
+        const productId = this.dataset.productId
+        fetch(`/cart/item/remove/${productId}/`, {
+          method: 'POST',
+          headers: {
+            'X-CSRFToken': '{{ csrf_token }}',
+            Accept: 'application/json'
+          }
+        })
+          .then((res) => res.json())
+          .then((data) => {
+            if (data.quantity !== undefined) {
+              if (data.removed) {
+                // Elimina el elemento del DOM si la cantidad es 0
+                this.closest('li').remove()
+                // Verifica si ya no quedan productos
+                if (document.querySelectorAll('#cartItems li').length === 0) {
+                  document.getElementById('cartItems').style.display = 'none'
+                  document.getElementById('emptyCartMsg').style.display = 'block'
+                }
+                document.getElementById('totalPrice').textContent = '$0.00'
+              } else {
+                // Actualiza solo el span de cantidad de este producto
+                this.parentElement.querySelector('.cart-quantity').textContent = data.quantity
+              }
+              if (data.total !== undefined) {
+                document.getElementById('totalPrice').textContent = `$${parseFloat(data.total).toFixed(2)}`
+              }
+            }
+          })
+      })
+    })
+  </script>
 {% endblock %}

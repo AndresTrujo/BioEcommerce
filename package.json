@@ -12,10 +12,11 @@
   "description": "",
   "devDependencies": {
     "autoprefixer": "^10.4.21",
+    "daisyui": "^5.0.43",
     "postcss": "^8.5.3",
-    "tailwindcss": "^4.1.7"
+    "tailwindcss": "^4.1.8"
   },
   "dependencies": {
-    "@tailwindcss/cli": "^4.1.7"
+    "@tailwindcss/cli": "^4.1.8"
   }
 }

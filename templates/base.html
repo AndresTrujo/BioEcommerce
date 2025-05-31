@@ -1,44 +1,137 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    {% load static %}
+
     <title>
       {% block title %}
         BioNutrex | Shop
       {% endblock %}
     </title>
     <link rel="stylesheet" href="{% static 'dist/styles.css' %}" />
+    <style>
+      .remove-btn {
+        background-color: #dc2626 !important; /* Tailwind red-600 */
+        color: #fff !important;
+      }
+    </style>
     {% block styles %}
 
     {% endblock %}
   </head>
-  <body class="block">
+  <body>
     {% block banner %}
 
     {% endblock %}
 
-    <header class="absolute top-0 left-0 w-full z-20">
+    <header class="absolute top-0 left-0 w-full z-180">
       {% include 'includes/nav.html' %}
     </header>
 
-    {% block carrito %}
-
-    {% endblock %}
 
     {% block content %}
 
     {% endblock %}
     <footer>
       {% include 'includes/footer.html' %}
-      <div class="container mx-auto p-4 text-center">
-        <p class="text-gray-400">@2025 Quantum Code Ltd. Tdos los derechos reservados.</p>
+      <div class="container mx-auto p-4">
+        <p class="text-center text-gray-400">@2025 Quantum Code Ltd. Tdos los derechos reservados.</p>
       </div>
     </footer>
     {% block scriptsJS %}
 
     {% endblock %}
+    <script>
+      function initCartEvents() {
+        // Botón sumar
+        document.querySelectorAll('.cart-add-btn').forEach((btn) => {
+          btn.addEventListener('click', function (e) {
+            e.preventDefault()
+            const productId = this.dataset.productId
+            fetch(`/cart/item/add/${productId}/`, {
+              method: 'POST',
+              headers: {
+                'X-CSRFToken': '{{ csrf_token }}',
+                Accept: 'application/json'
+              }
+            })
+              .then((res) => res.json())
+              .then((data) => {
+                if (data.quantity !== undefined) {
+                  // Actualiza solo el span de cantidad de este producto
+                  this.parentElement.querySelector('.cart-quantity').textContent = data.quantity
+                }
+                if (data.total !== undefined) {
+                  document.getElementById('totalPrice').textContent = `$${parseFloat(data.total).toFixed(2)}`
+                }
+              })
+          })
+        })
+      
+        // Botón restar
+        document.querySelectorAll('.cart-remove-btn').forEach((btn) => {
+          btn.addEventListener('click', function (e) {
+            e.preventDefault()
+            const productId = this.dataset.productId
+            fetch(`/cart/item/remove/${productId}/`, {
+              method: 'POST',
+              headers: {
+                'X-CSRFToken': '{{ csrf_token }}',
+                Accept: 'application/json'
+              }
+            })
+              .then((res) => res.json())
+              .then((data) => {
+                if (data.quantity !== undefined) {
+                  if (data.removed) {
+                    // Elimina el elemento del DOM si la cantidad es 0
+                    this.closest('li').remove()
+                    // Verifica si ya no quedan productos
+                    if (document.querySelectorAll('#cartItems li').length === 0) {
+                      document.getElementById('cartItems').style.display = 'none'
+                      document.getElementById('emptyCartMsg').style.display = 'block'
+                      document.getElementById('totalPrice').textContent = '$0.00'
+                    }
+                  } else {
+                    // Actualiza solo el span de cantidad de este producto
+                    this.parentElement.querySelector('.cart-quantity').textContent = data.quantity
+                  }
+                  if (data.total !== undefined) {
+                    document.getElementById('totalPrice').textContent = `$${parseFloat(data.total).toFixed(2)}`
+                  }
+                }
+              })
+          })
+        })
+      
+        const closeBtn = document.getElementById('closeCart')
+        if (closeBtn) {
+          closeBtn.addEventListener('click', function (e) {
+            e.preventDefault()
+            document.getElementById('cartBlock').classList.add('hidden')
+          })
+        }
+      }
+      
+      const carrito = document.getElementById('cartContainer')
+      const shoppingCart = document.getElementById('shopping-cart')
+      
+      // Botón cerrar carrito
+      
+      shoppingCart.addEventListener('click', (e) => {
+        e.preventDefault()
+        fetch('/cart/fragment/')
+          .then((res) => res.json())
+          .then((data) => {
+            console.log(data.html)
+            carrito.innerHTML = data.html
+            document.getElementById('cartBlock').classList.remove('hidden')
+            initCartEvents() // Inicializa los eventos del carrito después de cargar el fragmento
+          })
+      })
+    </script>
   </body>
 </html>
