@@ -6,6 +6,7 @@ from django.views.decorators.http import require_POST
 from django.http import JsonResponse
 from django.shortcuts import redirect
 from django.template.loader import render_to_string
+from django.contrib import messages
 # Create your views here.
 
 
@@ -30,7 +31,7 @@ def cart_add(request, product_id):
     if not created:
         cart_item.quantity += 1
     cart_item.save()
-
+    messages.success(request, "Producto añadido al carrito")
     return redirect('products:product_detail', id=product_id)
 
 

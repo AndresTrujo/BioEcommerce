@@ -6,6 +6,7 @@ app_name = "products"
 urlpatterns = [
     path('', views.landing_page, name="landing_page"),
     path('products/', views.product_list, name="product_list"),
+    path('last_page_redirect/', views.last_page_redirect, name="last_page_redirect"),
     path('products/<slug:category_slug>', views.product_list, name="product_list_by_category"),
     path('product/<str:id>/', views.product_detail, name="product_detail")
 ]

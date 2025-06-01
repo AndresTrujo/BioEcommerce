@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% block title %}
+  Order Confirmation
+{% endblock %}
+
+{% block banner %}
+  <section class="h-[72px]"></section>
+{% endblock %}
+
+{% block content %}
+  <div class="bg-gray-100 shadow-md container flex flex-col mx-auto p-5 mb-4 mt-5">
+    <h2>Tu orden ha sido colocada! Los detalles estan debajo.</h2>
+    <h3>ID de tu Orden: #{{ order.id }}</h3>\<ul>
+      {% for item in order.items.all %}
+        <li>
+          <strong>{{ item.quantity }} x {{ item.product.name }}</strong>
+          <br />
+          <span>{{ item.price }}</span>
+        </li>
+      {% endfor %}
+    </ul>
+    <p>Total: ${{ order.get_total_cost }}</p>
+  </div>
+{% endblock %}

@@ -45,93 +45,15 @@
 
     {% endblock %}
     <script>
-      function initCartEvents() {
-        // Botón sumar
-        document.querySelectorAll('.cart-add-btn').forEach((btn) => {
-          btn.addEventListener('click', function (e) {
-            e.preventDefault()
-            const productId = this.dataset.productId
-            fetch(`/cart/item/add/${productId}/`, {
-              method: 'POST',
-              headers: {
-                'X-CSRFToken': '{{ csrf_token }}',
-                Accept: 'application/json'
-              }
-            })
-              .then((res) => res.json())
-              .then((data) => {
-                if (data.quantity !== undefined) {
-                  // Actualiza solo el span de cantidad de este producto
-                  this.parentElement.querySelector('.cart-quantity').textContent = data.quantity
-                }
-                if (data.total !== undefined) {
-                  document.getElementById('totalPrice').textContent = `$${parseFloat(data.total).toFixed(2)}`
-                }
-              })
-          })
-        })
-      
-        // Botón restar
-        document.querySelectorAll('.cart-remove-btn').forEach((btn) => {
-          btn.addEventListener('click', function (e) {
-            e.preventDefault()
-            const productId = this.dataset.productId
-            fetch(`/cart/item/remove/${productId}/`, {
-              method: 'POST',
-              headers: {
-                'X-CSRFToken': '{{ csrf_token }}',
-                Accept: 'application/json'
-              }
-            })
-              .then((res) => res.json())
-              .then((data) => {
-                if (data.quantity !== undefined) {
-                  if (data.removed) {
-                    // Elimina el elemento del DOM si la cantidad es 0
-                    this.closest('li').remove()
-                    // Verifica si ya no quedan productos
-                    if (document.querySelectorAll('#cartItems li').length === 0) {
-                      document.getElementById('cartItems').style.display = 'none'
-                      document.getElementById('emptyCartMsg').style.display = 'block'
-                      document.getElementById('totalPrice').textContent = '$0.00'
-                    }
-                  } else {
-                    // Actualiza solo el span de cantidad de este producto
-                    this.parentElement.querySelector('.cart-quantity').textContent = data.quantity
-                  }
-                  if (data.total !== undefined) {
-                    document.getElementById('totalPrice').textContent = `$${parseFloat(data.total).toFixed(2)}`
-                  }
-                }
-              })
-          })
-        })
-      
-        const closeBtn = document.getElementById('closeCart')
-        if (closeBtn) {
-          closeBtn.addEventListener('click', function (e) {
-            e.preventDefault()
-            document.getElementById('cartBlock').classList.add('hidden')
-          })
+      const btnEnviar = document.getElementById('contact-submit-button');
+      btnEnviar.addEventListener('click', function (event) {
+        event.preventDefault(); // Evita el envío del formulario
+        if (nombre && email && mensaje) {
+          alert(`Gracias por contactarnos, ${nombre}!`);
+          // Aquí podrías enviar el formulario si es necesario
+        } else {
+          alert('Por favor, completa todos los campos.');
         }
-      }
-      
-      const carrito = document.getElementById('cartContainer')
-      const shoppingCart = document.getElementById('shopping-cart')
-      
-      // Botón cerrar carrito
-      
-      shoppingCart.addEventListener('click', (e) => {
-        e.preventDefault()
-        fetch('/cart/fragment/')
-          .then((res) => res.json())
-          .then((data) => {
-            console.log(data.html)
-            carrito.innerHTML = data.html
-            document.getElementById('cartBlock').classList.remove('hidden')
-            initCartEvents() // Inicializa los eventos del carrito después de cargar el fragmento
-          })
-      })
+      });
     </script>
-  </body>
 </html>

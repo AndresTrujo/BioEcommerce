@@ -44,7 +44,7 @@
       </div>
       <div class="flex flex-col justify-end items-center text-center pb-10 [&>p]:text-lg [&>p]:mb-3 [&>a]:bg-[#FFFFFF] [&>a]:text-black [&>a]:rounded-3xl [&>a]:px-5 [&>a]:py-2 [&>a]:text-sm | lg:items-end lg:pb-0 lg:w-[40%] lg:text-end lg:[&>p]:text-2xl">
         <p>Mejores precios, alta calidad, compromiso con tu salud.</p>
-        <a id="shopping-cart" href="#">Comprar ahora</a>
+        <a id="shopping-cart" href="#product-list">Comprar ahora</a>
       </div>
     </div>
   </section>
@@ -63,7 +63,7 @@
           <div class="product-card bg-white w-full h-full flex flex-col justify-between items-center p-5 rounded shadow">
             <div class="w-full flex flex-row justify-between items-start">
               <h3 class="text-[#070065] text-lg">{{ rand_cat.CAT_NOMBRE }}</h3>
-              <a href="#"><img class="object-contain h-7 w-7" src="{% static 'img/shop-cart.svg' %}" alt="Agregar al carrito" /></a>
+              <a href="{% url 'products:product_detail' product.ID_PRODUCTO %}"><img class="object-contain h-7 w-7" src="{% static 'img/shop-cart.svg' %}" alt="Agregar al carrito" /></a>
             </div>
             <div class="w-full h-48 flex items-center justify-center overflow-hidden">
               <img class="object-contain max-h-full max-w-full" src="{% static 'img/citrato.png' %}" alt="{{ product.PROD_NOMBRE }}" />

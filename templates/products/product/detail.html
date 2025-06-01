@@ -17,10 +17,10 @@
   <!-- btn return start -->
   <div class="flex items-center pl-5 pt-5 gap-2 | lg:gap-5">
     <div class="btn">
-      <a href="{% url 'products:landing_page' %}"><img class="w-5" src="{% static 'img/arrow-left.svg' %}" alt="" /></a>
+      <a href="{% url 'products:last_page_redirect' %}"><img class="w-5" src="{% static 'img/arrow-left.svg' %}" alt="" /></a>
     </div>
     <div class="pb-1 pl-2">
-      <a href="{% url 'products:landing_page' %}">Regresar</a>
+      <a href="{% url 'products:last_page_redirect' %}">Regresar</a>
     </div>
   </div>
   <!-- btn return end -->
@@ -70,6 +70,16 @@
             <button type="submit" class="w-full h-15 sm:h-11 bg-[#0D00BD] flex justify-center items-center text-white">Comprar ahora</button>
           </form>
         </div>
+
+        {% if messages %}
+          {% for msg in messages %}
+            <div id="cartAlert" class="w-full mt-2 flex transition-opacity duration-500">
+              <div class="px-4 border py-3 rounded bg-green-100 text-green-900 border-green-300 w-full text-center" role="alert">
+                <strong class="font-bold">{{ msg }}</strong>
+              </div>
+            </div>
+          {% endfor %}
+        {% endif %}
 
         <!-- acordion -->
         <div className="acordion-container ">
@@ -170,6 +180,19 @@
 
 {% block scriptsJS %}
   <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const alertDiv = document.getElementById('cartAlert')
+      if (alertDiv) {
+        setTimeout(() => {
+          alertDiv.style.opacity = '0'
+          setTimeout(() => {
+            alertDiv.style.display = 'none'
+          }, 500) // Espera a que termine la transición
+        }, 2500) // 2.5 segundos visible
+      }
+    })
+  </script>
+  {% comment %} <script>
     document.getElementById('add-to-cart-form').addEventListener('submit', function (event) {
       event.preventDefault()
       const form = event.target
@@ -184,7 +207,7 @@
       }).then((response) => response.json())
     })
   </script>
-
+  {% endcomment %}
   <script>
     const accordionHeader = document.querySelectorAll('.accordion-header')
     accordionHeader.forEach((accordionHeader) => {

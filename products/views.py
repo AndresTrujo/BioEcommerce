@@ -1,9 +1,16 @@
 from django.shortcuts import render, get_object_or_404
+from django.shortcuts import redirect
 from .models import Categoria, Producto
 from random import choice
 
 
+def last_page_redirect(request):
+    last_page = request.session.get('last_page', '/')
+    return redirect(last_page)
+
+
 def landing_page(request):
+    request.session['last_page'] = request.get_full_path()
     template_name = 'products/index.html'
     lista_productos = Producto.objects.all()[:3]
     context = {
@@ -13,6 +20,7 @@ def landing_page(request):
 
 
 def product_list(request, category_slug=None):
+    request.session['last_page'] = request.get_full_path()
     category = None
     products = Producto.objects.filter(PROD_DISPONIBLE=True)
     categories = Categoria.objects.all()
