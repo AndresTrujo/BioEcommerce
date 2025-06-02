@@ -37,6 +37,8 @@ def product_list(request, category_slug=None):
         'categories': categories,
         'first_three': first_three
     })
+# views.py
+# TODO: Este es un comentario para verificar cambios
 
 
 def product_detail(request, id):
