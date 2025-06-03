@@ -1,4 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
+from django.views.decorators.http import require_POST 
+from django.views import generic
 # Importa settings para acceder a las claves de Stripe
 from django.conf import settings
 from django.urls import reverse
@@ -11,6 +13,9 @@ import stripe  # Importa la librería de Stripe
 from cart.models import Cart
 from orders.models import Order, OrderItem
 from .forms import OrderCreateForm
+
+# Configura tu clave secreta de Stripe
+stripe.api_key = settings.STRIPE_SECRET_KEY
 
 
 def order_create(request):
@@ -29,21 +34,10 @@ def order_create(request):
         return redirect('cart:cart_detail')
 
     if request.method == 'POST':
-        if request.user.is_authenticated:
-            form = OrderCreateForm(request.POST, initial={
-                'full_name': request.user.get_full_name() if hasattr(request.user, 'get_full_name') else request.user.username,
-                'email': request.user.email,
-                'address': getattr(request.user, 'address', '')
-            })
-        else:
-            form = OrderCreateForm(request.POST)
+        form = OrderCreateForm(request.POST)
 
         if form.is_valid():
             order = form.save(commit=False)
-
-            if request.user.is_authenticated:
-                order.user = request.user
-
             order.save()
 
             for item in cart.items.all():
@@ -53,88 +47,65 @@ def order_create(request):
                     price=item.product.PROD_PRECIO_PUB,
                     quantity=item.quantity
                 )
-
-            # TODO: Guardamos la orden, pero no la borramos del carrito ni la sesión aún.
-            # Esto lo haremos DESPUÉS de un pago exitoso con Stripe.
-            # Almacenamos el ID de la orden en la sesión para usarlo en la vista de pago
             request.session['order_id'] = order.id
-
-            # Redirigir a la vista de procesamiento de pago de Stripe
             return redirect('orders:payment_process')
     else:
-        if request.user.is_authenticated:
-            form = OrderCreateForm(initial={
-                'full_name': request.user.get_full_name() if hasattr(request.user, 'get_full_name') else request.user.username,
-                'email': request.user.email,
-                'address': getattr(request.user, 'address', '')
-            })
-        else:
-            form = OrderCreateForm()
-
+        form = OrderCreateForm()
     return render(request, 'orders/order_create.html', {
         'form': form,
         'cart': cart
     })
 
-
 def payment_process(request):
     cart_id = request.session.get('cart_id')
-    order_id = request.session.get('order_id', None)
+    order_id = request.session.get('order_id')
     cart = Cart.objects.get(id=cart_id)
     if not order_id:
         return redirect('cart:cart_detail')  # O a una página de error
 
     order = get_object_or_404(Order, id=order_id)
-
-    if request.method == 'POST':
         # Crear los ítems para la sesión de Checkout de Stripe
-        line_items = []
-        for item in order.items.all():
-            line_items.append({
-                'price_data': {
-                    'currency': 'mxn',  # O la moneda que uses
-                    'product_data': {
-                        'name': item.product.PROD_NOMBRE,  # Asumiendo que tu producto tiene un nombre
-                    },
-                    # Stripe espera el precio en centavos
-                    'unit_amount': int(item.price * 100),
+    line_items = []
+    for item in order.items.all():
+        line_items.append({
+            'price_data': {
+                'currency': 'mxn',  # O la moneda que uses
+                'product_data': {
+                    'name': item.product.PROD_NOMBRE,  # Asumiendo que tu producto tiene un nombre
                 },
-                'quantity': item.quantity,
-            })
-
-        try:
-            # Crear la sesión de Checkout de Stripe
-            checkout_session = stripe.checkout.Session.create(
-                line_items=line_items,
-                mode='payment',
-                success_url=request.build_absolute_uri(
-                    reverse('orders:payment_success')),
-                cancel_url=request.build_absolute_uri(
-                    reverse('orders:payment_canceled')),
-                # Opcional: pasar el ID de la orden como metadata
-                metadata={
-                    'order_id': order.id
-                }
-            )
-            if 'cart_id' in request.session:
-                cart.delete()
-                del request.session['cart_id']
-            if 'order_id' in request.session:
-                del request.session['order_id']
-            # Redirigir al usuario a la URL de la sesión de Checkout
-            return redirect(checkout_session.url, code=303)
-        except Exception as e:
-            # Manejar errores de Stripe
-            # Debes crear esta plantilla
-            return render(request, 'orders/payment_error.html', {'error': str(e)})
-    else:
-        # Renderizar una plantilla de confirmación de pago antes de redirigir a Stripe
-        # O podrías simplemente redirigir a POST directamente si el usuario ya ha confirmado la orden
-        cart.delete()
+                # Stripe espera el precio en centavos
+                'unit_amount': int(item.price * 100),
+            },
+            'quantity': item.quantity,
+        })
+        # Crear la sesión de Checkout de Stripe
+    host = request.get_host()
+    checkout_session = stripe.checkout.Session.create(
+        line_items=line_items,
+        mode='payment',
+        success_url="http://{}{}".format(host,
+                                            reverse('orders:payment_success')),
+        cancel_url="http://{}{}".format(host,
+                                        reverse('orders:payment_canceled')),
+        # Opcional: pasar el ID de la orden como metadata
+        metadata={
+            'order_id': order.id
+        }
+    )
+    if 'cart_id' in request.session:
         del request.session['cart_id']
-        return render(request, 'orders/payment_process.html', {'order': order})
+    if 'order_id' in request.session:
+        del request.session['order_id']
+    # Redirigir al usuario a la URL de la sesión de Checkout
+    return redirect(checkout_session.url, code=303)
+"""     else:
+    # Renderizar una plantilla de confirmación de pago antes de redirigir a Stripe
+    # O podrías simplemente redirigir a POST directamente si el usuario ya ha confirmado la orden
+    cart.delete()
+    del request.session['cart_id']
+    return render(request, 'orders/payment_process.html', {'order': order})
 
-
+ """
 def payment_success(request):
     # Esta vista solo se alcanza si el usuario es redirigido por Stripe.
     # La confirmación final del pago debe hacerse a través de un webhook.
