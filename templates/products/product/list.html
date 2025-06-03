@@ -66,7 +66,11 @@
               <a href="{% url 'products:product_detail' product.ID_PRODUCTO %}"><img class="object-contain h-7 w-7" src="{% static 'img/shop-cart.svg' %}" alt="Agregar al carrito" /></a>
             </div>
             <div class="w-full h-48 flex items-center justify-center overflow-hidden">
-              <img class="object-contain max-h-full max-w-full" src="{% static 'img/citrato.png' %}" alt="{{ product.PROD_NOMBRE }}" />
+              {% if product.PROD_IMAGEN %}
+                <img src="{{ product.PROD_IMAGEN.url }}" alt="{{ product.PROD_NOMBRE }}" />
+              {% else %}
+                <img class="object-contain max-h-full max-w-full" src="{% static 'img/pre-workout.png' %}" alt="{{ product.PROD_NOMBRE }}" />
+              {% endif %}
             </div>
             <div class="text-container flex flex-col justify-start items-start w-full break-words">
               <h2 class="font-regular text-lg text-black break-words">{{ product.PROD_NOMBRE }} {% if product.PROD_GRAMAJE is not None %}{{ product.PROD_GRAMAJE|floatformat:0 }}{% endif %}</h2>
@@ -104,9 +108,9 @@
               <div class="product-card bg-white w-full max-w-sm flex flex-col justify-between items-center p-5 rounded shadow">
                 <div class="w-full h-48 flex items-center justify-center overflow-hidden">
                   {% if product.PROD_IMAGEN %}
-                    <img src="{{ product.PROD_IMAGEN.url }}" alt="{{ product.PROD_NOMBRE }}" class="max-h-30" />
+                    <img src="{{ product.PROD_IMAGEN.url }}" alt="{{ product.PROD_NOMBRE }}" />
                   {% else %}
-                    <p>La imagen no esta disponible</p>
+                    <img class="object-contain max-h-full max-w-full" src="{% static 'img/pre-workout.png' %}" alt="{{ product.PROD_NOMBRE }}" />
                   {% endif %}
                 </div>
                 <div class="text-container flex flex-col justify-start items-start w-full break-words">

@@ -33,7 +33,7 @@
         {% if product.PROD_IMAGEN %}
           <img src="{{ product.PROD_IMAGEN.url }}" alt="{{ product.PROD_NOMBRE }}" class="w-1/2 object-fill" />
         {% else %}
-          <img src="{% static '/img/citrato.png' %}" alt="" />
+          <img src="{% static '/img/citrato.png' %}" alt="w-1/2 object-fill" />
         {% endif %}
       </div>
     </div>

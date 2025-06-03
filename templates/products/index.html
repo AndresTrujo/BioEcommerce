@@ -12,7 +12,7 @@
       </div>
       <div class="flex flex-col justify-end items-center text-center pb-10 [&>p]:text-lg [&>p]:mb-3 [&>a]:bg-[#FFFFFF] [&>a]:text-black [&>a]:rounded-3xl [&>a]:px-5 [&>a]:py-2 [&>a]:text-sm | lg:items-end lg:pb-0 lg:w-[40%] lg:text-end lg:[&>p]:text-2xl">
         <p>Mejores precios, alta calidad, compromiso con tu salud.</p>
-        <a href="{% url "products:product_list" %}">Comprar ahora</a>
+        <a href="{% url 'products:product_list' %}">Comprar ahora</a>
       </div>
     </div>
   </section>
@@ -48,9 +48,14 @@
       {% for product in products %}
         <div class="w-full max-w-sm">
           <!-- TODO: Cambiar fotos de producto -->
-          <img src="{% static 'img/pre-workout.png' %}" alt="" class="w-full" />
+          {% if product.PROD_IMAGEN %}
+            <img src="{{ product.PROD_IMAGEN.url }}" alt="{{ product.PROD_NOMBRE }}" class="w-full object-contain" />
+          {% else %}
+            <img src="{% static 'img/pre-workout.png' %}" alt="" class="w-full" />
+          {% endif %}
+
           <div class="flex text-center mt-1">
-            <h5 class="pr-2 w-1/2 py-1 text-lg lg:pr-1 xl:text-xl">{{ product.PROD_NOMBRE }} {{ product.PROD_GRAMAJE|floatformat:0}}</h5>
+            <h5 class="pr-2 w-1/2 py-1 text-lg lg:pr-1 xl:text-xl">{{ product.PROD_NOMBRE }} {{ product.PROD_GRAMAJE|floatformat:0 }}</h5>
             <a class="w-1/2 cursor-pointer bg-[#E0E0E0] text-black px-2 py-1 lg:px-1 lg:py-0 lg:text-[.7rem] lg:flex lg:items-center lg:justify-center lg:text-center xl:px-2 xl:py-1 xl:text-[.9rem]" href="{% url 'products:product_detail' id=product.ID_PRODUCTO %} ">COMPRAR AHORA</a>
           </div>
         </div>
@@ -58,4 +63,15 @@
     </div>
   </section>
   <!-- best seller fin -->
+ <div>
+  <h5 class="text-3xl pl-5 lg:text-2xl 2xl:text-3xl">Nueva Colección</h5>
+  <div class="flex flex-col justify-center items-center">
+    <div class="mt-10 mb-10 w-full h-100 px-5 relative flex justify-center items-center">
+      <img src="{% static 'img/new-collection.jpg' %}" alt="new-collection" class="w-full h-full object-cover object-center" />
+      <a href="{% url 'products:product_list' %}" class="absolute inset-0 flex items-center justify-center ">
+        <span class="bg-[#1E1E1E] text-white py-10 px-10 min-w-[220px] min-h-[60px] flex items-center justify-center text-3xl font-bold rounded-lg shadow-lg hover:bg-[#333] transition-colors">EXPLORAR</span>
+      </a>
+    </div>
+  </div>
+  <!-- nueva coleccion end -->
 {% endblock %}
