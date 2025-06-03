@@ -162,7 +162,7 @@ def payment_success(request):
 
 def payment_canceled(request):
     # El usuario canceló el pago, puedes redirigirlo de vuelta al carrito o a la página de la orden
-    return render(request, 'cart/detail.html')
+    return render(request, 'orders/payment_cancelled.html')
 
 
 def order_confirmation(request, order_id):
