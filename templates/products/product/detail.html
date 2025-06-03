@@ -64,7 +64,7 @@
         <div class="w-full mt-2 flex">
           <!-- btn que dirigirá al checkout -->
           <!-- TODO: Boton que añade al carro y redirige a Stripe -->
-          <form action="" method="post" class="w-full h-15 sm:h-11">
+          <form action="{% url "orders:buy_now" product.ID_PRODUCTO %}" method="post" class="w-full h-15 sm:h-11">
             {% csrf_token %}
             <button type="submit" class="w-full h-15 sm:h-11 bg-[#0D00BD] flex justify-center items-center text-white">Comprar ahora</button>
           </form>

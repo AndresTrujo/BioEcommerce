@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.views.decorators.http import require_POST 
+from django.views.decorators.http import require_POST
 from django.views import generic
 # Importa settings para acceder a las claves de Stripe
 from django.conf import settings
@@ -9,13 +9,43 @@ from django.http import JsonResponse, HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 
 import stripe  # Importa la librería de Stripe
-
-from cart.models import Cart
+from cart.views import cart_add
+from cart.models import Cart, CartItem
 from orders.models import Order, OrderItem
 from .forms import OrderCreateForm
+from products.models import Producto
 
 # Configura tu clave secreta de Stripe
 stripe.api_key = settings.STRIPE_SECRET_KEY
+
+
+def buy_now(request, product_id):
+    """
+    Vista para manejar la compra inmediata de un producto.
+    Crea un carrito temporal si no existe y añade el producto.
+    Luego redirige a la vista de creación de orden.
+    """
+    cart_id = request.session.get('cart_id')
+
+    if cart_id:
+        try:
+            cart = Cart.objects.get(id=cart_id)
+        except Cart.DoesNotExist:
+            cart = Cart.objects.create()
+    else:
+        cart = Cart.objects.create()
+        request.session['cart_id'] = cart.id
+
+    product = get_object_or_404(Producto, ID_PRODUCTO=product_id)
+    # Añadir el producto al carrito
+    cart_item, created = CartItem.objects.get_or_create(
+        cart=cart, product=product)
+
+    if not created:
+        cart_item.quantity += 1
+    cart_item.save()
+    # Redirige a la vista de creación de orden
+    return redirect('orders:order_create')
 
 
 def order_create(request):
@@ -56,6 +86,7 @@ def order_create(request):
         'cart': cart
     })
 
+
 def payment_process(request):
     cart_id = request.session.get('cart_id')
     order_id = request.session.get('order_id')
@@ -64,7 +95,7 @@ def payment_process(request):
         return redirect('cart:cart_detail')  # O a una página de error
 
     order = get_object_or_404(Order, id=order_id)
-        # Crear los ítems para la sesión de Checkout de Stripe
+    # Crear los ítems para la sesión de Checkout de Stripe
     line_items = []
     for item in order.items.all():
         line_items.append({
@@ -84,7 +115,7 @@ def payment_process(request):
         line_items=line_items,
         mode='payment',
         success_url="http://{}{}".format(host,
-                                            reverse('orders:payment_success')),
+                                         reverse('orders:payment_success')),
         cancel_url="http://{}{}".format(host,
                                         reverse('orders:payment_canceled')),
         # Opcional: pasar el ID de la orden como metadata
@@ -98,6 +129,8 @@ def payment_process(request):
         del request.session['order_id']
     # Redirigir al usuario a la URL de la sesión de Checkout
     return redirect(checkout_session.url, code=303)
+
+
 """     else:
     # Renderizar una plantilla de confirmación de pago antes de redirigir a Stripe
     # O podrías simplemente redirigir a POST directamente si el usuario ya ha confirmado la orden
@@ -106,6 +139,8 @@ def payment_process(request):
     return render(request, 'orders/payment_process.html', {'order': order})
 
  """
+
+
 def payment_success(request):
     # Esta vista solo se alcanza si el usuario es redirigido por Stripe.
     # La confirmación final del pago debe hacerse a través de un webhook.
