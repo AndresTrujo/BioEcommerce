@@ -8,6 +8,7 @@ class CategoriaAdmin(admin.ModelAdmin):
     
 @admin.register(Producto)
 class ProductAdmin(admin.ModelAdmin):
+    # TODO: mostrar columna cantidad
     list_display = ["ID_PRODUCTO", "PROD_NOMBRE", "PROD_PRECIO_MAY", "PROD_PRECIO_PUB", "PROD_CREADO", "PROD_MODIFICADO", "PROD_CATEGORIA", "PROD_DISPONIBLE"]
     
     prepopulated_fields = {'PROD_SLUG':('PROD_NOMBRE',)}

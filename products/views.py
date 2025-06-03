@@ -12,7 +12,7 @@ def last_page_redirect(request):
 def landing_page(request):
     request.session['last_page'] = request.get_full_path()
     template_name = 'products/index.html'
-    lista_productos = Producto.objects.all()[:3]
+    lista_productos = Producto.objects.filter(PROD_NOMBRE__contains='CREATINA')[:3]
     context = {
         "products": lista_productos,
     }

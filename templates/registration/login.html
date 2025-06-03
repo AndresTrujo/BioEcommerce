@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+  Iniciar Sesión | Bionutrex
+{% endblock %}
+
+{% block banner %}
+  <section class="h-[72px]"></section>
+{% endblock %}
+
+{% block content %}
+  <div class="flex flex-col p-4 items-center justify-center m-4">
+    <div class="container bg-white p-6 sm:p-8 md:p-10 shadow-md rounded-2xl w-full max-w-md">
+      <h2 class="text-center text-2xl font-semibold text-blue-700 py-6 sm:mb-8">Inicia Sesión</h2>
+      <form class="space-y-4 sm:space-y-5 w-3/4 mx-auto" method="post" action="{% url 'login' %}">
+        {% csrf_token %}
+
+        {# Mensajes de error globales del formulario #}
+        {% if form.errors %}
+          <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+            <strong class="font-bold">¡Error!</strong>
+            <span class="block sm:inline">Por favor, corrige los siguientes errores:</span>
+            <ul class="mt-2 list-disc list-inside">
+              {% for field in form %}
+                {% if field.errors %}
+                  {% for error in field.errors %}
+                    <li>{{ field.label }}: {{ error }}</li>
+                  {% endfor %}
+                {% endif %}
+              {% endfor %}
+              {% if form.non_field_errors %}
+                {% for error in form.non_field_errors %}
+                  <li>{{ error }}</li>
+                {% endfor %}
+              {% endif %}
+            </ul>
+          </div>
+        {% endif %}
+
+        <div class="flex items-center border border-gray-300 rounded-lg focus-within:ring-2 focus-within:ring-blue-700">
+
+          <input type="username" placeholder="Nombre de Usuario" name="username" id="id_username" required class="w-full pl-4 p-2 sm:p-3 focus:outline-none" />
+        </div>
+
+        <div class="flex items-center border border-gray-300 rounded-lg focus-within:ring-2 focus-within:ring-blue-700">
+          {# Renderiza el campo de password del formulario de Django #}
+          <input type="password" placeholder="Contraseña" name="password" id="id_password" required class="w-full pl-4 p-2 sm:p-3 focus:outline-none" />
+        </div>
+
+        <button type="submit" class="w-full bg-blue-700 text-white p-2.5 sm:p-3 rounded-lg text-lg hover:bg-blue-800 transition-colors">Iniciar Sesión</button>
+      </form>
+
+      <div class="text-center text-sm mt-5">
+        ¿No tienes una cuenta?
+        <a href="{% url 'signup' %}" class="text-blue-700 font-bold hover:underline">Regístrate aquí</a>
+      </div>
+    </div>
+  </div>
+{% endblock %}

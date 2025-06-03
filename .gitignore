@@ -1,6 +1,8 @@
-/.venv/
-/venv/
-/.vscode/
-/.idea/
-/.mypy_cache/
-/.pytest_cache/
+.venv/
+venv/
+.vscode/
+.idea/
+.mypy_cache/
+.pytest_cache/
+**/__pycache__/
+node_modules/

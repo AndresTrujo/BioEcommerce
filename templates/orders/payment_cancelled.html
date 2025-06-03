@@ -1,0 +1,17 @@
+{% extends 'base.html' %} {# O tu plantilla base #}
+
+{% block title %}
+  Pago Cancelado
+{% endblock %}
+
+{% block content %}
+  <h1>Pago Cancelado</h1>
+  <p>Tu transacción ha sido cancelada.</p>
+  <p>
+    Puedes <a href="{% url 'cart:cart_detail' %}">volver a tu carrito</a> o <a href="{% url 'products:product_list' %}">seguir comprando</a>.
+  </p>
+{% endblock %}
+
+{% block banner %}
+  <section class="h-[72px]"></section>
+{% endblock %}

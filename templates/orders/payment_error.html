@@ -1,0 +1,15 @@
+{% extends 'base.html' %} {# O tu plantilla base #}
+
+{% block title %}Error de Pago{% endblock %}
+
+{% block content %}
+    <h1>Hubo un problema con tu pago</h1>
+    <p>Lo sentimos, no pudimos procesar tu pago en este momento.</p>
+    <p>Error: {{ error }}</p>
+    <p>Por favor, intenta de nuevo más tarde o contacta a soporte.</p>
+    <p><a href="{% url 'cart:cart_detail' %}">Volver a tu carrito</a></p>
+{% endblock %}
+
+{% block banner %}
+  <section class="h-[72px]"></section>
+{% endblock %}

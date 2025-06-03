@@ -12,7 +12,7 @@
       </div>
       <div class="flex flex-col justify-end items-center text-center pb-10 [&>p]:text-lg [&>p]:mb-3 [&>a]:bg-[#FFFFFF] [&>a]:text-black [&>a]:rounded-3xl [&>a]:px-5 [&>a]:py-2 [&>a]:text-sm | lg:items-end lg:pb-0 lg:w-[40%] lg:text-end lg:[&>p]:text-2xl">
         <p>Mejores precios, alta calidad, compromiso con tu salud.</p>
-        <a href="#">Comprar ahora</a>
+        <a href="{% url "products:product_list" %}">Comprar ahora</a>
       </div>
     </div>
   </section>
@@ -26,7 +26,7 @@
       <div class="mt-10 suplements-section px-5 flex flex-col gap-5 | lg:flex-row lg:gap-5 lg:justify-center lg:items-center lg:w-full">
         <div class="protein h-[600px] bg-[url('/static/img/protein_section.jpg')] bg-cover bg-center bg-no-repeat flex flex-col justify-end items-center p-5 text-white | lg:flex-grow lg:items-start | 2xl:h-[800px]">
           <p class="pb-2 | lg:text-2xl">Proteína</p>
-          <a class="bg-white text-black px-2 py-1 rounded-2xl" href="{% url 'products:product_list_by_category' category_slug='proteinas' %}#product-list">COMPRAR AHORA</a>"
+          <a class="bg-white text-black px-2 py-1 rounded-2xl" href="{% url 'products:product_list_by_category' category_slug='proteinas' %}#product-list">COMPRAR AHORA</a>
         </div>
         <div class="creatine h-[600px] bg-[url('/static/img/creatine_section.jpg')] bg-cover bg-center bg-no-repeat flex flex-col justify-end items-center p-5 text-white | lg:flex-grow lg:items-start | 2xl:h-[800px]">
           <p class="pb-2 | lg:text-2xl">Creatina</p>
@@ -47,9 +47,10 @@
     <div class="mt-6 px-5 grid gap-6 grid-cols-1 lg:grid-cols-3 justify-items-center">
       {% for product in products %}
         <div class="w-full max-w-sm">
-          <img src="{% static 'img/prot-keto.png' %}" alt="" class="w-full" />
+          <!-- TODO: Cambiar fotos de producto -->
+          <img src="{% static 'img/pre-workout.png' %}" alt="" class="w-full" />
           <div class="flex text-center mt-1">
-            <h5 class="pr-2 w-1/2 py-1 text-lg lg:pr-1 xl:text-xl">{{ product.PROD_NOMBRE }} {{ product.PROD_GRAMAJE }}</h5>
+            <h5 class="pr-2 w-1/2 py-1 text-lg lg:pr-1 xl:text-xl">{{ product.PROD_NOMBRE }} {{ product.PROD_GRAMAJE|floatformat:0}}</h5>
             <a class="w-1/2 cursor-pointer bg-[#E0E0E0] text-black px-2 py-1 lg:px-1 lg:py-0 lg:text-[.7rem] lg:flex lg:items-center lg:justify-center lg:text-center xl:px-2 xl:py-1 xl:text-[.9rem]" href="{% url 'products:product_detail' id=product.ID_PRODUCTO %} ">COMPRAR AHORA</a>
           </div>
         </div>

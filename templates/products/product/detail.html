@@ -55,7 +55,6 @@
           <!-- Se desplegará carrito de compras -->
           <div class="w-full flex">
             <!-- Formulario para añadir al carrito -->
-            <!-- TODO: Funcion para confirmar la adicion, slider del carrito hacia abajo. -->
             <form action="{% url 'cart:cart_add' product_id=product.ID_PRODUCTO %}" method="post" id="add-to-cart-form" class="w-full h-15 sm:h-11">
               {% csrf_token %}
               <button type="submit" class="w-full h-15 sm:h-11 bg-black flex justify-center items-center text-white transition hover:bg-[#686868] mb-2">Añadir al carrito</button>

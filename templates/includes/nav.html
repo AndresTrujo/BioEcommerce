@@ -24,7 +24,7 @@
     </div>
     <div class="user">
       <!-- TODO: VISTA DE USUARIO -->
-      <a href="#"><img src="{% static 'img/user.svg' %}" alt="Perfil" /></a>
+      <a href="{% url 'login' %}"><img src="{% static 'img/user.svg' %}" alt="Perfil" /></a>
     </div>
     <div class="">
       <svg class="h-6 w-5 menu block lg:hidden" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -34,6 +34,19 @@
           <path d="M4 6H20M4 12H20M4 18H20" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
         </g>
       </svg>
+    </div>
+    <div id="ham_menu" class="hidden absolute w-30 top-6 bg-[#1E1E1E] flex flex-col justify-center items-center gap-5 z-20">
+      <ul>
+        <li class="text-white hover:bg-[#4E4E4E]">
+          <a href="{% url "products:landing_page" %}#bestseller">Best sellers</a>
+        </li>
+        <li class="text-white hover:bg-[#4E4E4E]">
+          <a href="{% url "products:landing_page" %}">Home</a>
+        </li>
+        <li class="text-white hover:bg-[#4E4E4E]">
+          <a href="{% url "products:product_list" %}">Suplements</a>
+        </li>
+      </ul>
     </div>
   </div>
   <div class="absolute inset-0 bg-[#1E1E1E] opacity-50 rounded-inherit z-0 | lg:rounded-4xl lg"></div>

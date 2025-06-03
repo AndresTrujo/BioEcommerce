@@ -10,12 +10,13 @@
 {% block content %}
   <div class="bg-gray-100 shadow-md container flex flex-col mx-auto p-5 mb-4 mt-5">
     <h2>Tu orden ha sido colocada! Los detalles estan debajo.</h2>
-    <h3>ID de tu Orden: #{{ order.id }}</h3>\<ul>
+    <h3>ID de tu Orden: #{{ order.id }}</h3>
+    <ul>
       {% for item in order.items.all %}
         <li>
-          <strong>{{ item.quantity }} x {{ item.product.name }}</strong>
+          <strong>{{ item.quantity }} x {{ item.product.PROD_NOMBRE }}</strong>
           <br />
-          <span>{{ item.price }}</span>
+          <span>${{ item.price }}</span>
         </li>
       {% endfor %}
     </ul>

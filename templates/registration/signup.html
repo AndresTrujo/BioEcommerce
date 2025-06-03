@@ -1,0 +1,118 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+  Crear Cuenta | Bionutrex
+{% endblock %}
+
+{% block banner %}
+  <section class="h-[72px]"></section>
+{% endblock %}
+
+{% block content %}
+  <!-- Sign Up start -->
+  <div class="flex flex-col p-4 items-center justify-center min-h-screen">
+    <div class="bg-white p-6 sm:p-8 md:p-10 shadow-md rounded-2xl w-full max-w-md lg:max-w-lg">
+      <h2 class="text-center text-2xl font-semibold text-blue-800 mb-6 sm:mb-8">Crear Cuenta</h2>
+      <form class="space-y-4 sm:space-y-5" method="post">
+        {% csrf_token %}
+
+        {% if form.non_field_errors %}
+          <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+            <strong class="font-bold">¡Error!</strong>
+            <span class="block sm:inline">Por favor, corrige los siguientes errores:</span>
+            <ul class="mt-2 list-disc list-inside">
+              {% for error in form.non_field_errors %}
+                <li>{{ error }}</li>
+              {% endfor %}
+            </ul>
+          </div>
+        {% endif %}
+
+        {# Campo first_name #}
+        <div class="relative">
+          <i class="fa fa-user absolute top-1/2 left-3 transform -translate-y-1/2 text-gray-400"></i>
+          <input type="text" placeholder="Nombre" name="first_name" id="id_first_name" value="{{ form.first_name.value|default:'' }}" required class="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400" />
+          {% if form.first_name.errors %}
+            <p class="text-red-500 text-xs italic mt-1">{{ form.first_name.errors }}</p>
+          {% endif %}
+        </div>
+
+        {# Campo last_name #}
+        <div class="relative">
+          <i class="fa fa-user absolute top-1/2 left-3 transform -translate-y-1/2 text-gray-400"></i>
+          <input type="text" placeholder="Apellido" name="last_name" id="id_last_name" value="{{ form.last_name.value|default:'' }}" required class="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400" />
+          {% if form.last_name.errors %}
+            <p class="text-red-500 text-xs italic mt-1">{{ form.last_name.errors }}</p>
+          {% endif %}
+        </div>
+
+        {# Campo email #}
+        <div class="relative">
+          <i class="fa fa-envelope absolute top-1/2 left-3 transform -translate-y-1/2 text-gray-400"></i>
+          <input type="email" placeholder="Correo electrónico" name="email" id="id_email" value="{{ form.email.value|default:'' }}" required class="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400" />
+          {% if form.email.errors %}
+            <p class="text-red-500 text-xs italic mt-1">{{ form.email.errors }}</p>
+          {% endif %}
+        </div>
+
+        {# Campo username #}
+        <div class="relative">
+          <i class="fa fa-user absolute top-1/2 left-3 transform -translate-y-1/2 text-gray-400"></i>
+          <input type="text" placeholder="Nombre de usuario" name="username" id="id_username" value="{{ form.username.value|default:'' }}" required class="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400" />
+          {% if form.username.errors %}
+            <p class="text-red-500 text-xs italic mt-1">{{ form.username.errors }}</p>
+          {% endif %}
+        </div>
+
+        {# Campo password #}
+        <div class="relative">
+          <i class="fa fa-lock absolute top-1/2 left-3 transform -translate-y-1/2 text-gray-400"></i>
+          <input type="password" placeholder="Contraseña" name="password" id="id_password1" required class="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400" />
+          {% if form.password.errors %}
+            <p class="text-red-500 text-xs italic mt-1">{{ form.password.errors }}</p>
+          {% endif %}
+        </div>
+
+        {# Campo password2 (confirmar contraseña) #}
+        <div class="relative">
+          <i class="fa fa-lock absolute top-1/2 left-3 transform -translate-y-1/2 text-gray-400"></i>
+          <input type="password" placeholder="Confirmar contraseña" name="password2" id="id_password2" required class="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400" />
+          {% if form.password2.errors %}
+            <p class="text-red-500 text-xs italic mt-1">{{ form.password2.errors }}</p>
+          {% endif %}
+        </div>
+
+        {# Campo sexo #}
+        <div class="relative">
+          <i class="fa fa-venus-mars absolute top-1/2 left-3 transform -translate-y-1/2 text-gray-400"></i>
+          <select name="sexo" id="id_sexo" required class="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 appearance-none bg-white">
+            <option value="" disabled selected>Selecciona tu sexo</option>
+            <option value="masculino">Masculino</option>
+            <option value="femenino">Femenino</option>
+            <option value="no-especificar">Prefiero no especificar</option>
+          </select>
+          {% if form.sexo.errors %}
+            <p class="text-red-500 text-xs italic mt-1">{{ form.sexo.errors }}</p>
+          {% endif %}
+        </div>
+
+        {# Campo fecha_nacimiento #}
+        <div class="relative">
+          <i class="fa fa-calendar absolute top-1/2 left-3 transform -translate-y-1/2 text-gray-400"></i>
+          <input type="date" placeholder="Fecha de Nacimiento" name="fecha_nacimiento" id="id_fecha_nacimiento" value="{{ form.fecha_nacimiento.value|default:''|date:'Y-m-d' }}" required class="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400" />
+          {% if form.fecha_nacimiento.errors %}
+            <p class="text-red-500 text-xs italic mt-1">{{ form.fecha_nacimiento.errors }}</p>
+          {% endif %}
+        </div>
+
+        <button type="submit" class="w-full bg-blue-700 text-white p-3 rounded-lg text-lg hover:bg-blue-600 transition-colors">Registrarse</button>
+      </form>
+
+      <div class="text-center text-sm mt-5">
+        ¿Ya tienes una cuenta?
+        <a href="{% url 'login' %}" class="text-blue-800 font-bold hover:underline">Inicia sesión</a>
+      </div>
+    </div>
+  </div>
+{% endblock %}

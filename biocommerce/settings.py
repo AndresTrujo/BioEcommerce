@@ -21,6 +21,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-b%a7m!qt!ij1hkxcqq95ld!^v+9%8!w5!19if^2!lvo)=$h6g#'
+STRIPE_PUBLISHABLE_KEY = "pk_live_51RVuzZE7HVY39HFDVd9jGQoYWWMQbtH3QMicvwCNdp16C8uN07Bt2rVsvvk8aBcIbSnhT3AvxAEDgEQ4JlcUnMY800f3jzgGP9"
+STRIPE_SECRET_KEY = "sk_test_51RVuzfCjeYG66sme6KHmhI9UJCiHiBNhmfpbaDfkn3NHdwkm6QyhMPStySVwwvuhGeyiV4NKyxhXSciTEURbdTpE007wLFnZvO"
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -41,6 +43,7 @@ INSTALLED_APPS = [
     'products',
     'cart',
     'orders',
+    'users',
 ]
 
 MIDDLEWARE = [
@@ -121,7 +124,7 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
-STATICFILES_DIRS = [ BASE_DIR / STATIC_URL ]
+STATICFILES_DIRS = [BASE_DIR / STATIC_URL]
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
@@ -132,3 +135,6 @@ MEDIA_URL = 'media/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 MEDIA_ROOT = BASE_DIR / 'mediafiles'
+# Asumiendo que tienes una URL llamada 'profile'
+LOGIN_REDIRECT_URL = 'products:landing_page'
+LOGOUT_REDIRECT_URL = 'login'  # Redirige de nuevo a la página de login

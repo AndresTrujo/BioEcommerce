@@ -31,7 +31,6 @@
       {% include 'includes/nav.html' %}
     </header>
 
-
     {% block content %}
 
     {% endblock %}
@@ -45,15 +44,31 @@
 
     {% endblock %}
     <script>
-      const btnEnviar = document.getElementById('contact-submit-button');
+      const btnEnviar = document.getElementById('contact-submit-button')
       btnEnviar.addEventListener('click', function (event) {
-        event.preventDefault(); // Evita el envío del formulario
+        event.preventDefault() // Evita el envío del formulario
         if (nombre && email && mensaje) {
-          alert(`Gracias por contactarnos, ${nombre}!`);
+          alert(`Gracias por contactarnos, ${nombre}!`)
           // Aquí podrías enviar el formulario si es necesario
         } else {
-          alert('Por favor, completa todos los campos.');
+          alert('Por favor, completa todos los campos.')
         }
-      });
+      })
     </script>
+    <script>
+      document.getElementById('miFormulario').addEventListener('submit', function (event) {
+        event.preventDefault() // Prevenir el envío predeterminado
+        alert('Formulario enviado!') // Mostrar el alert
+        // Aquí puedes agregar tu lógica adicional, como enviar los datos del formulario mediante AJAX
+      })
+    </script>
+    <!-- TODO: añadir breve Alert al formulario del footer -->
+    <script>
+      let ham_menu = document.getElementById('ham_menu')
+      
+      menuMobile.addEventListener('click', function () {
+        ham_menu.classList.toggle('hidden')
+      })
+    </script>
+  </body>
 </html>
