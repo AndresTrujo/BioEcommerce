@@ -138,3 +138,4 @@ MEDIA_ROOT = BASE_DIR / 'mediafiles'
 # Asumiendo que tienes una URL llamada 'profile'
 LOGIN_REDIRECT_URL = 'products:landing_page'
 LOGOUT_REDIRECT_URL = 'login'  # Redirige de nuevo a la página de login
+ALLOWED_HOSTS = ['*']  # Permite todas las solicitudes de host
