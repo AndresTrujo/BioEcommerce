@@ -12,24 +12,24 @@
       overflow: hidden;
       transition: max-height 0.25s ease-in-out;
     }
-    
+
     .accordion-active .accordion-content {
       max-height: 500px;
       /* Adjust as needed */
     }
-    
+
     .product-card {
       @apply h-100 w-full mb-8 bg-white flex flex-col items-center rounded-lg shadow-md overflow-hidden;
       max-width: min(100%, 350px);
       /* Added max-width */
     }
-    
+
     .product-card img {
       @apply object-cover h-55 w-30 mx-auto; /* Added mx-auto for horizontal centering */
       max-height: 200px;
       /* Added max-height */
     }
-    
+
     .product-card .text-container {
       @apply w-full h-20 text-black pt-2;
     }
@@ -56,7 +56,7 @@
     <div>
       <h1 class="text-white text-4xl md:text-5xl text-center pt-2 md:pt-4 font-bold">NUEVA COLECCIÓN</h1>
     </div>
-    <div class="flex flex-row justify-center items-center gap-8 w-full m-4 py-4 md:mt-6 px-5 lg:px-10">
+    <div class="flex flex-col justify-center items-center gap-8 w-full m-4 py-4 md:mt-6 px-5 lg:px-10 lg:flex-row">
       <!-- carta de productos -->
       {% for product in first_three %}
         <a href="{% url 'products:product_detail' product.ID_PRODUCTO %}">
@@ -84,8 +84,9 @@
   </div>
   <!-- NUEVA COLECCIÓN END -->
   <div class="mx-auto p-4 flex" id="product-list">
-    <aside class="w-1/4 p-4">
+    <aside class="hidden lg:flex-col lg:flex lg:w-1/4 lg:p-4">
       <h2 class="font-bold">Categorías:</h2>
+      &nbsp;
       <ul>
         {% for category in categories %}
           <li class="mb-2">
@@ -129,11 +130,11 @@
 {% block scriptsJS %}
   <script>
     const accordions = document.querySelectorAll('.accordion')
-    
+
     accordions.forEach((accordion) => {
       const toggle = accordion.querySelector('.accordion-toggle')
       const content = accordion.querySelector('.accordion-content')
-    
+
       toggle.addEventListener('click', () => {
         accordion.classList.toggle('accordion-active')
         if (accordion.classList.contains('accordion-active')) {

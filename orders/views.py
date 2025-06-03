@@ -1,14 +1,11 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.decorators.http import require_POST
 from django.views import generic
-# Importa settings para acceder a las claves de Stripe
 from django.conf import settings
 from django.urls import reverse
 from django.http import JsonResponse, HttpResponse
-# Necesario para webhooks, cuidado con esto
 from django.views.decorators.csrf import csrf_exempt
-
-import stripe  # Importa la librería de Stripe
+import stripe
 from cart.views import cart_add
 from cart.models import Cart, CartItem
 from orders.models import Order, OrderItem
@@ -123,10 +120,7 @@ def payment_process(request):
             'order_id': order.id
         }
     )
-    if 'cart_id' in request.session:
-        del request.session['cart_id']
-    if 'order_id' in request.session:
-        del request.session['order_id']
+
     # Redirigir al usuario a la URL de la sesión de Checkout
     return redirect(checkout_session.url, code=303)
 
@@ -168,7 +162,7 @@ def payment_success(request):
 
 def payment_canceled(request):
     # El usuario canceló el pago, puedes redirigirlo de vuelta al carrito o a la página de la orden
-    return render(request, 'orders/payment_canceled.html')
+    return render(request, 'cart/detail.html')
 
 
 def order_confirmation(request, order_id):
