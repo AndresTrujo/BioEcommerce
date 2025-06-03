@@ -27,7 +27,7 @@ STRIPE_SECRET_KEY = "sk_test_51RVuzfCjeYG66sme6KHmhI9UJCiHiBNhmfpbaDfkn3NHdwkm6Q
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['18.188.141.97','joshuamarin.me', 'www.joshuamarin.me']
 
 
 # Application definition
