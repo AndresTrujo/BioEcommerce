@@ -47,11 +47,10 @@
     <div class="mt-6 px-5 grid gap-6 grid-cols-1 lg:grid-cols-3 justify-items-center">
       {% for product in products %}
         <div class="w-full max-w-sm">
-          <!-- TODO: Cambiar fotos de producto -->
           {% if product.PROD_IMAGEN %}
             <img src="{{ product.PROD_IMAGEN.url }}" alt="{{ product.PROD_NOMBRE }}" class="w-full object-contain" />
           {% else %}
-            <img src="{% static 'img/pre-workout.png' %}" alt="" class="w-full" />
+            <img src="{% static 'img/pre-workout.png' %}" alt="" class="w-full object-contain" />
           {% endif %}
 
           <div class="flex text-center mt-1">

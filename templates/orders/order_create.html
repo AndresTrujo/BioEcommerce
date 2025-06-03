@@ -4,25 +4,37 @@
   Order Confirmation
 {% endblock %}
 
-{% block styles %}
-  <style>
-    form p {
-      margin-bottom: 1rem;
-    }
-  </style>
-{% endblock %}
-
 {% block banner %}
   <section class="h-[72px]"></section>
 {% endblock %}
 
 {% block content %}
-  <div class="bg-gray-100 shadow-md container flex flex-col mx-auto p-5 mb-4 mt-5">
-    <h2 class="text-2xl font-bold">Checkout:</h2>
-    <form action="" method="post">
+  <div class="shadow-md container flex flex-col mx-auto p-5 mb-4 mt-5 max-w-lg bg-white rounded-2xl">
+    <h2 class="text-2xl font-bold mb-6 text-[#1E1E1E]">Checkout</h2>
+    <form action="" method="post" class="space-y-5">
       {% csrf_token %}
-      {{ form.as_p }}
-      <button class="bg-green-500 text-white px-5 py-2 mt-3 rounded hover:bg-green-600 mb-5" type="submit">Ordenar</button>
+      <div>
+        <label for="{{ form.full_name.id_for_label }}" class="block text-[#1E1E1E] font-semibold mb-2">Nombre completo</label>
+        {{ form.full_name }}
+        {% if form.full_name.errors %}
+          <p class="text-red-600 text-sm mt-1">{{ form.full_name.errors.0 }}</p>
+        {% endif %}
+      </div>
+      <div>
+        <label for="{{ form.email.id_for_label }}" class="block text-[#1E1E1E] font-semibold mb-2">Correo electrónico</label>
+        {{ form.email }}
+        {% if form.email.errors %}
+          <p class="text-red-600 text-sm mt-1">{{ form.email.errors.0 }}</p>
+        {% endif %}
+      </div>
+      <div>
+        <label for="{{ form.address.id_for_label }}" class="block text-[#1E1E1E] font-semibold mb-2">Dirección</label>
+        {{ form.address }}
+        {% if form.address.errors %}
+          <p class="text-red-600 text-sm mt-1">{{ form.address.errors.0 }}</p>
+        {% endif %}
+      </div>
+      <button class="bg-green-500 text-white px-5 py-2 rounded-lg font-semibold hover:bg-green-600 transition-colors w-full mt-4" type="submit">Ordenar</button>
     </form>
   </div>
 {% endblock %}
