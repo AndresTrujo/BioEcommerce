@@ -2,7 +2,7 @@ from django.db import models
 from django.urls import reverse
 # Create your models here
 
-
+# Modelo de la categoria de los productos
 class Categoria(models.Model):
     CAT_NOMBRE = models.CharField(max_length=50)
     CAT_SLUG = models.SlugField(default="", null=False, unique=True)
@@ -12,7 +12,8 @@ class Categoria(models.Model):
 
     def __str__(self):
         return self.CAT_NOMBRE
-    
+
+# Modelo de los productos
 class Producto(models.Model):
     ID_PRODUCTO = models.CharField(primary_key=True, max_length=50)
     PROD_CATEGORIA = models.ForeignKey(Categoria, related_name="productos", on_delete=models.CASCADE)
@@ -27,11 +28,11 @@ class Producto(models.Model):
     PROD_IMAGEN = models.ImageField(upload_to='productos/', null=True, blank=True)
     PROD_CREADO = models.DateTimeField(auto_now_add=True)
     PROD_MODIFICADO = models.DateTimeField(auto_now=True)
-    
+
     def __str__(self):
         return self.PROD_NOMBRE
-    
+
     def get_absolute_url(self):
         return reverse("productos:detalle_producto", kwargs={"id": self.id, "slug": self.PROD_SLUG})
-    
-    
+
+

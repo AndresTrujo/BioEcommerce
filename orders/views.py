@@ -7,8 +7,8 @@ from django.http import JsonResponse, HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 import stripe
 from cart.views import cart_add
-from cart.models import Cart, CartItem
-from orders.models import Order, OrderItem
+from cart.models import Cart_Model, Cart_Item
+from orders.models import Order_Model, Order_Item
 from .forms import OrderCreateForm
 from products.models import Producto
 
@@ -26,16 +26,16 @@ def buy_now(request, product_id):
 
     if cart_id:
         try:
-            cart = Cart.objects.get(id=cart_id)
-        except Cart.DoesNotExist:
-            cart = Cart.objects.create()
+            cart = Cart_Model.objects.get(id=cart_id)
+        except Cart_Model.DoesNotExist:
+            cart = Cart_Model.objects.create()
     else:
-        cart = Cart.objects.create()
+        cart = Cart_Model.objects.create()
         request.session['cart_id'] = cart.id
 
     product = get_object_or_404(Producto, ID_PRODUCTO=product_id)
     # Añadir el producto al carrito
-    cart_item, created = CartItem.objects.get_or_create(
+    cart_item, created = Cart_Item.objects.get_or_create(
         cart=cart, product=product)
 
     if not created:
@@ -46,13 +46,15 @@ def buy_now(request, product_id):
 
 
 def order_create(request):
+    """Esta funcion crea una nueva orden a partir del carrito de compras.
+        Utiliza POST para asegurar que la peticion HTTP sea segura"""
     cart = None
     cart_id = request.session.get('cart_id')
 
     if cart_id:
         try:
-            cart = Cart.objects.get(id=cart_id)
-        except Cart.DoesNotExist:
+            cart = Cart_Model.objects.get(id=cart_id)
+        except Cart_Model.DoesNotExist:
             return redirect('cart:cart_detail')
 
         if not cart.items.exists():
@@ -68,7 +70,7 @@ def order_create(request):
             order.save()
 
             for item in cart.items.all():
-                OrderItem.objects.create(
+                Order_Item.objects.create(
                     order=order,
                     product=item.product,
                     price=item.product.PROD_PRECIO_PUB,
@@ -85,13 +87,14 @@ def order_create(request):
 
 
 def payment_process(request):
+    """Funcion para procesar el pago"""
     cart_id = request.session.get('cart_id')
     order_id = request.session.get('order_id')
-    cart = Cart.objects.get(id=cart_id)
+    cart = Cart_Model.objects.get(id=cart_id)
     if not order_id:
         return redirect('cart:cart_detail')  # O a una página de error
 
-    order = get_object_or_404(Order, id=order_id)
+    order = get_object_or_404(Order_Model, id=order_id)
     # Crear los ítems para la sesión de Checkout de Stripe
     line_items = []
     for item in order.items.all():
@@ -144,7 +147,7 @@ def payment_success(request):
     if order_id:
         # Opcional: Marcar la orden como pagada aquí si el webhook no es indispensable en tu caso
         # Sin embargo, el webhook es más robusto para esto.
-        order = get_object_or_404(Order, id=order_id)
+        order = get_object_or_404(Order_Model, id=order_id)
         if not order.paid:
             order.paid = True
             order.save()
@@ -166,7 +169,7 @@ def payment_canceled(request):
 
 
 def order_confirmation(request, order_id):
-    order = get_object_or_404(Order, id=order_id)
+    order = get_object_or_404(Order_Model, id=order_id)
     return render(request, 'orders/order_confirmation.html', {'order': order})
 
 
@@ -195,7 +198,7 @@ def stripe_webhook(request):
         order_id = session.get('metadata', {}).get('order_id')
         if order_id:
             try:
-                order = Order.objects.get(id=order_id)
+                order = Order_Model.objects.get(id=order_id)
                 if not order.paid:  # Marcar la orden como pagada solo si no lo está ya
                     order.paid = True
                     order.save()
@@ -210,7 +213,7 @@ def stripe_webhook(request):
                     # Si quieres borrar el carrito aquí, necesitarías pasar el cart_id en la metadata de la sesión de Stripe
                     # y luego recuperarlo.
 
-            except Order.DoesNotExist:
+            except Order_Model.DoesNotExist:
                 print(f"Order with ID {order_id} not found for webhook event.")
         else:
             print("No order_id found in webhook metadata.")

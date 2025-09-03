@@ -3,12 +3,12 @@ from django.shortcuts import redirect
 from .models import Categoria, Producto
 from random import choice
 
-
+"""Redirige a la última página visitada"""
 def last_page_redirect(request):
     last_page = request.session.get('last_page', '/')
     return redirect(last_page)
 
-
+"""Renderiza la landing page de la tienda"""
 def landing_page(request):
     request.session['last_page'] = request.get_full_path()
     template_name = 'products/index.html'
@@ -18,7 +18,8 @@ def landing_page(request):
     }
     return render(request, template_name, context)
 
-
+# Renderiza la lista de productos, categorias}
+# y toma aleatoriamente tres productos de la lista
 def product_list(request, category_slug=None):
     request.session['last_page'] = request.get_full_path()
     category = None
@@ -37,10 +38,9 @@ def product_list(request, category_slug=None):
         'categories': categories,
         'first_three': first_three
     })
-# views.py
-# TODO: Este es un comentario para verificar cambios
 
 
+# Renderiza los detalles del producto
 def product_detail(request, id):
     product = get_object_or_404(Producto, ID_PRODUCTO=id, PROD_DISPONIBLE=True)
     categories = Categoria.objects.all()
