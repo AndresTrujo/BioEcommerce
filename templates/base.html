@@ -11,7 +11,14 @@
         BioNutrex | Shop
       {% endblock %}
     </title>
-    <link rel="stylesheet" href="{% static 'dist/styles.css' %}" />
+    {% comment %}Tailwind here{% endcomment %}
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+
+    {% comment %}Box-icons here{% endcomment %}
+    <link href="https://cdn.boxicons.com/fonts/basic/boxicons.min.css" rel="stylesheet" />
+    <link href="https://cdn.boxicons.com/fonts/brands/boxicons-brands.min.css" rel="stylesheet" />
+    <link href="https://cdn.boxicons.com/fonts/transformations.min.css" rel="stylesheet" />
+
     <style>
       .remove-btn {
         background-color: #dc2626 !important; /* Tailwind red-600 */
@@ -34,12 +41,34 @@
     {% block content %}
 
     {% endblock %}
+
+    <div id="virtualAssistantContainer" class="fixed bottom-10 right-4 z-50">
+      <div id="assistantButton" class="cursor-pointer text-blue-900 p-3 bg-blue-100 rounded-[20%] hover:text-white hover:bg-blue-900 transition-all duration-300 ease-in-out">
+        <i class="bx bx-message-dots bx-md"></i>
+      </div>
+
+      <div id="assistantChat" class="absolute bottom-0 right-0 w-70 sm:w-80 h-96 sm:h-96 bg-white rounded-lg shadow-xl p-4 hidden flex-col justify-between transition-all duration-300 ease-in-out">
+        <div class="flex justify-between items-center mb-2">
+          <h3 class="text-lg font-semibold">BIONUTREX</h3>
+          <button id="closeChat" class="text-gray-500 hover:text-gray-700"><i class="bx bx-x bx-sm"></i></button>
+        </div>
+        <div class="flex-grow overflow-y-auto border-t border-b py-2 mb-2">
+          <p class="text-gray-700">¡Hola! ¿En qué puedo ayudarte hoy?</p>
+        </div>
+        <div class="flex flex-col | sm:flex-row">
+          <input type="text" placeholder="Escribe tu mensaje..." class="flex-grow border sm:rounded-l px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+          <button class="bg-blue-500 text-white px-4 py-2 sm:rounded-r hover:bg-blue-600">Enviar</button>
+        </div>
+      </div>
+    </div>
+
     <footer>
       {% include 'includes/footer.html' %}
       <div class="container mx-auto p-4">
         <p class="text-center text-gray-400">@2025 Quantum Code Ltd. Tdos los derechos reservados.</p>
       </div>
     </footer>
+
     {% block scriptsJS %}
 
     {% endblock %}
@@ -70,5 +99,6 @@
         ham_menu.classList.toggle('hidden')
       })
     </script>
+    <script src="{% static 'js/base.js' %}"></script>
   </body>
 </html>
