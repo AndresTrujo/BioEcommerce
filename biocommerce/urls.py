@@ -15,5 +15,5 @@ urlpatterns = [
     path('orders/', include('orders.urls', namespace='orders')),
     path('profile/', TemplateView.as_view(template_name='registration/profile.html'), name='profile'),
     path('signup/', SignUpView.as_view(), name='signup'),
-
+    path('chatbot/', include('chatbot.urls')),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
