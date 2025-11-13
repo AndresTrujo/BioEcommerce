@@ -17,7 +17,7 @@ class Categoria(models.Model):
 class Producto(models.Model):
     ID_PRODUCTO = models.CharField(primary_key=True, max_length=50)
     PROD_CATEGORIA = models.ForeignKey(Categoria, related_name="productos", on_delete=models.CASCADE)
-    PROD_NOMBRE = models.CharField(max_length=50)
+    PROD_NOMBRE = models.CharField(max_length=150)
     PROD_DESCRIPCION = models.CharField(max_length=50, blank=True)
     PROD_SLUG = models.SlugField(max_length=250)
     CONTENIDO_PZS = models.CharField(max_length=50, blank=True)

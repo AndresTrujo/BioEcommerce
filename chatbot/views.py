@@ -115,6 +115,7 @@ def chatbot_view(request):
         data = json.loads(request.body)
         user_message = data.get("message", "")
 
+<<<<<<< Updated upstream
         # Obtener contexto de la tienda
         store_context = get_store_context()
 
@@ -153,6 +154,11 @@ def chatbot_view(request):
             print(f"Error en chatbot: {str(e)}")
             print(f"Tipo de error: {type(e).__name__}")
             bot_reply = "Disculpa, estoy experimentando dificultades técnicas. Por favor, intenta nuevamente en unos momentos."
+=======
+        model = genai.GenerativeModel("gemini-2.5-flash")
+        response = model.generate_content(user_message)
+        bot_reply = response.text if hasattr(response, "text") else "Lo siento, no entendí tu pregunta."
+>>>>>>> Stashed changes
 
         return JsonResponse({"reply": bot_reply})
     return JsonResponse({"error": "Método no permitido"}, status=405)

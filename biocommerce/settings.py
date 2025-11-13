@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 from pathlib import Path
+import dj_database_url
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -22,13 +23,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-b%a7m!qt!ij1hkxcqq95ld!^v+9%8!w5!19if^2!lvo)=$h6g#'
 STRIPE_PUBLISHABLE_KEY = "pk_live_51RVuzZE7HVY39HFDVd9jGQoYWWMQbtH3QMicvwCNdp16C8uN07Bt2rVsvvk8aBcIbSnhT3AvxAEDgEQ4JlcUnMY800f3jzgGP9"
-STRIPE_SECRET_KEY = "sk_test_51RVuzfCjeYG66sme6KHmhI9UJCiHiBNhmfpbaDfkn3NHdwkm6QyhMPStySVwwvuhGeyiV4NKyxhXSciTEURbdTpE007wLFnZvO"
-STRIPE_WEBHOOK_SECRET = ""
+STRIPE_SECRET_KEY = "sk_test_51RVuzfCjeYG66sme6KHmhIJCiHiBNhmfpbaDfkn3NHdwkm6QyhMPStySVwwvuhGeyiV4NKyxhXSciTEURbdTpE007wLFnZvO"
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['18.188.141.97','joshuamarin.me', 'www.joshuamarin.me']
+ALLOWED_HOSTS = ['18.188.141.97','joshuamarin.me', 'www.joshuamarin.me', '*']
 
 
 # Application definition
@@ -44,7 +44,10 @@ INSTALLED_APPS = [
     'products',
     'cart',
     'orders',
-    'users',
+    'dj_database_url',
+    'corsheaders',
+    'api',
+    'rest_framework'
 ]
 
 MIDDLEWARE = [
@@ -56,6 +59,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     "django_browser_reload.middleware.BrowserReloadMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
 ]
 
 ROOT_URLCONF = 'biocommerce.urls'
@@ -81,16 +85,14 @@ WSGI_APPLICATION = 'biocommerce.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
+DATABASE_URL = "postgresql://postgres:S1steemas25@db.kcarooudfegtfwqhnwyw.supabase.co:5432/postgres"
+
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+    'default': dj_database_url.parse(DATABASE_URL, conn_max_age=600, ssl_require=False)
 }
 
-
 # Password validation
-# https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
+# https://docs.djangoproject.coen/5.2/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -140,3 +142,19 @@ MEDIA_ROOT = BASE_DIR / 'mediafiles'
 LOGIN_REDIRECT_URL = 'products:landing_page'
 LOGOUT_REDIRECT_URL = 'login'  # Redirige de nuevo a la página de login
 ALLOWED_HOSTS = ['*']  # Permite todas las solicitudes de host
+
+
+CORS_ALLOW_ALL_ORIGINS = True
+CORS_ORIGIN_ALLOW_ALL = True
+
+REST_FRAMEWORK = {
+   'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework_simplejwt.authentication.JWTAuthentication',  # recommended
+        # 'rest_framework.authentication.SessionAuthentication',  # optional
+    ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.AllowAny',  # tighten in prod
+    ],
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 20,
+}
