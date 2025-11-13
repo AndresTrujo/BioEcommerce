@@ -85,7 +85,7 @@ WSGI_APPLICATION = 'biocommerce.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
-DATABASE_URL = "postgresql://postgres:S1steemas25@db.kcarooudfegtfwqhnwyw.supabase.co:5432/postgres"
+DATABASE_URL = "postgresql://postgres.kcarooudfegtfwqhnwyw:S1steemas25@aws-1-us-east-2.pooler.supabase.com:5432/postgres"
 
 DATABASES = {
     'default': dj_database_url.parse(DATABASE_URL, conn_max_age=600, ssl_require=False)
