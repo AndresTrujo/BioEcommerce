@@ -46,20 +46,6 @@
       <div id="assistantButton" class="cursor-pointer text-blue-900 p-3 bg-blue-100 rounded-[20%] hover:text-white hover:bg-blue-900 transition-all duration-300 ease-in-out">
         <i class="bx bx-message-dots bx-md"></i>
       </div>
-
-      <div id="assistantChat" class="absolute bottom-0 right-0 w-70 sm:w-80 h-96 sm:h-96 bg-white rounded-lg shadow-xl p-4 hidden flex-col justify-between transition-all duration-300 ease-in-out">
-        <div class="flex justify-between items-center mb-2">
-          <h3 class="text-lg font-semibold">BIONUTREX</h3>
-          <button id="closeChat" class="text-gray-500 hover:text-gray-700"><i class="bx bx-x bx-sm"></i></button>
-        </div>
-        <div class="flex-grow overflow-y-auto border-t border-b py-2 mb-2">
-          <p class="text-gray-700">¡Hola! ¿En qué puedo ayudarte hoy?</p>
-        </div>
-        <div class="flex flex-col | sm:flex-row">
-          <input type="text" placeholder="Escribe tu mensaje..." class="flex-grow border sm:rounded-l px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" />
-          <button class="bg-blue-500 text-white px-4 py-2 sm:rounded-r hover:bg-blue-600">Enviar</button>
-        </div>
-      </div>
     </div>
 
     <footer>
@@ -94,31 +80,73 @@
     <!-- TODO: añadir breve Alert al formulario del footer -->
     <script>
       let ham_menu = document.getElementById('ham_menu')
-
+      
       menuMobile.addEventListener('click', function () {
         ham_menu.classList.toggle('hidden')
       })
     </script>
-  <!-- Chatbot Widget -->
-  <div id="chatbot-widget" style="position:fixed;bottom:20px;right:20px;z-index:9999;background:#fff;border:1px solid #ccc;padding:10px;border-radius:8px;width:300px;">
-    <div id="chatArea" style="height:150px;overflow-y:auto;margin-bottom:10px;"></div>
-    <input type="text" id="userInput" placeholder="Escribe tu mensaje..." style="width:70%;">
-    <button id="sendBtn">Enviar</button>
-  </div>
-  <script>
-  document.getElementById('sendBtn').onclick = async function() {
-    const userMessage = document.getElementById('userInput').value;
-    document.getElementById('chatArea').innerHTML += `<div><b>Tú:</b> ${userMessage}</div>`;
-    const response = await fetch('/chatbot/api/', {
-      method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({ message: userMessage })
-    });
-    const data = await response.json();
-    document.getElementById('chatArea').innerHTML += `<div><b>Bot:</b> ${data.reply}</div>`;
-    document.getElementById('userInput').value = '';
-    document.getElementById('chatArea').scrollTop = document.getElementById('chatArea').scrollHeight;
-  };
-  </script>
+    <!-- Chatbot Widget -->
+    <div id="chatbot-widget" class="hidden bottom-4 right-4 fixed z-9999 bg-[#EDEDED] border-1 border-[#ccc] p-3 rounded-sm w-80">
+      <div class="flex justify-between items-center mb-3 border-b pb-2">
+        <h3 class="text-lg font-bold">Asistente Virtual</h3>
+        <div id="closeChatBtn" class="cursor-pointer text-black hover:text-blue-900 transition-colors">
+          <i class="bx bx-x bx-sm"></i>
+        </div>
+      </div>
+      <div id="chatArea" class="h-50 overflow-y-auto mb-5"></div>
+      <div class="w-full flex items-center justify-center gap-2 mb-2">
+        <input type="text" id="userInput" placeholder="Escribe tu mensaje..." class="w-[70%] bg-white p-1 rounded-sm" />
+        <button id="sendBtn" class="text-center p-1 rounded-sm bg-blue-900 text-white">Enviar</button>
+      </div>
+    </div>
+
+    <!-- Chatbot Widget Logica -->
+    <script>
+      document.getElementById('sendBtn').onclick = async function () {
+        const userMessage = document.getElementById('userInput').value
+        document.getElementById('chatArea').innerHTML += `<div><b>Tú:</b> ${userMessage}</div>`
+        const response = await fetch('/chatbot/api/', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message: userMessage })
+        })
+        const data = await response.json()
+        document.getElementById('chatArea').innerHTML += `<div><b>:</b> ${data.reply}</div>`
+        document.getElementById('userInput').value = ''
+        document.getElementById('chatArea').scrollTop = document.getElementById('chatArea').scrollHeight
+      }
+    </script>
+
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+        const assistantButton = document.getElementById('assistantButton')
+        const chatbotWidget = document.getElementById('chatbot-widget')
+        const closeChatBtn = document.getElementById('closeChatBtn')
+      
+        function openChat() {
+          if (chatbotWidget) {
+            chatbotWidget.classList.remove('hidden')
+          }
+        }
+      
+        function closeChat() {
+          if (chatbotWidget) {
+            chatbotWidget.classList.add('hidden')
+          }
+        }
+      
+        if (assistantButton) {
+          assistantButton.addEventListener('click', openChat)
+        }
+      
+        if (closeChatBtn) {
+          closeChatBtn.addEventListener('click', closeChat)
+        }
+      
+        if (!assistantButton || !chatbotWidget || !closeChatBtn) {
+          console.error('Error: Uno o más elementos (assistantButton, chatbot-widget, o closeChatBtn) no se encontraron en el DOM.')
+        }
+      })
+    </script>
   </body>
 </html>
