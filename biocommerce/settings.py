@@ -52,6 +52,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    "corsheaders.middleware.CorsMiddleware",
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -59,7 +60,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     "django_browser_reload.middleware.BrowserReloadMiddleware",
-    "corsheaders.middleware.CorsMiddleware",
+    'django.middleware.gzip.GZipMiddleware'
 ]
 
 ROOT_URLCONF = 'biocommerce.urls'
@@ -90,6 +91,11 @@ DATABASE_URL = "postgresql://postgres.kcarooudfegtfwqhnwyw:S1steemas25@aws-1-us-
 DATABASES = {
     'default': dj_database_url.parse(DATABASE_URL, conn_max_age=600, ssl_require=False)
 }
+
+DATABASES['default'].update({
+    'CONN_MAX_AGE': 0,   # cierra la conexión al final de cada request
+    'OPTIONS': {'sslmode': 'require'},  # si Supabase requiere SSL
+})
 
 # Password validation
 # https://docs.djangoproject.coen/5.2/ref/settings/#auth-password-validators

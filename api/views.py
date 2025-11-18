@@ -1,36 +1,29 @@
-from django.shortcuts import render
-from rest_framework import viewsets, filters
+from django.views.decorators.cache import cache_page
+from django.utils.decorators import method_decorator
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from products.models import Categoria, Producto
-from .serializers import ProductoSerializer
+from products.models import Producto
 
 
+# @method_decorator(cache_page(60*5), name='dispatch')
 class ProductoView(APIView):
     def get(self, request):
-        # placeholder: puedes usar tu propia imagen en /static/img/placeholder.jpg
-        # o cambiar a un placeholder externo si prefieres (ej. via.placeholder.com)
-        default_placeholder = request.build_absolute_uri('/static/img/placeholder.jpg')
-        products = []
-        for p in Producto.objects.all():
-            # resolver URL de imagen de forma segura; algunos objetos FileField lanzan
-            # ValueError cuando no tienen archivo asociado
-            try:
-                if p.PROD_IMAGEN and getattr(p.PROD_IMAGEN, 'name', None):
-                    image_url = request.build_absolute_uri(p.PROD_IMAGEN.url)
-                else:
-                    image_url = default_placeholder
-            except ValueError:
-                image_url = default_placeholder
-
-            prod = {
-                "ID_PRODUCTO": p.ID_PRODUCTO,
-                "PROD_NOMBRE": p.PROD_NOMBRE,
-                "PROD_PRECIO_PUB": p.PROD_PRECIO_PUB,
-                "PROD_CATEGORIA": p.PROD_CATEGORIA.CAT_NOMBRE if p.PROD_CATEGORIA else None,
-                "PROD_IMAGEN": image_url,
-            }
-            products.append(prod)
-
-        return Response(products)
+        qs = Producto.objects.select_related('PROD_CATEGORIA').all()
+        # values() devuelve solo los campos que necesitamos (evita cargar objetos completos)
+        rows = qs.values('ID_PRODUCTO', 'PROD_NOMBRE', 'PROD_PRECIO_PUB', 'PROD_CATEGORIA__CAT_NOMBRE', 'PROD_IMAGEN')
+        # mapear los nombres para mantener compatibilidad con el frontend
+        output = []
+        base = request.build_absolute_uri('/')[:-1]  # http://host:port
+        for r in rows:
+            img = r.get('PROD_IMAGEN')
+            # si PROD_IMAGEN es ruta relativa, conviértela en absoluta; si es None usar placeholder
+            image_url = request.build_absolute_uri(img) if img else request.build_absolute_uri('/static/img/placeholder.png')
+            output.append({
+                'ID_PRODUCTO': r['ID_PRODUCTO'],
+                'PROD_NOMBRE': r['PROD_NOMBRE'],
+                'PROD_PRECIO_PUB': r['PROD_PRECIO_PUB'],
+                'PROD_CATEGORIA': r.get('PROD_CATEGORIA__CAT_NOMBRE'),
+                'PROD_IMAGEN': image_url,
+            })
+        return Response(output)
     
