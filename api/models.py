@@ -1,3 +1,4 @@
 from django.db import models
 
-# Create your models here.
+# No custom user model: use Django's built-in `auth.User`.
+# This file intentionally left minimal to avoid defining a second user model.
