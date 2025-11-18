@@ -3,6 +3,8 @@ from django.utils.decorators import method_decorator
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from products.models import Producto
+import os
+from django.conf import settings
 
 
 # @method_decorator(cache_page(60*5), name='dispatch')
@@ -16,8 +18,15 @@ class ProductoView(APIView):
         base = request.build_absolute_uri('/')[:-1]  # http://host:port
         for r in rows:
             img = r.get('PROD_IMAGEN')
-            # si PROD_IMAGEN es ruta relativa, conviértela en absoluta; si es None usar placeholder
-            image_url = request.build_absolute_uri(img) if img else request.build_absolute_uri('/static/img/placeholder.png')
+            # si PROD_IMAGEN contiene una ruta o solo el nombre, usar el nombre de archivo
+            # y apuntar a /mediafiles/productos/<filename>. Si no hay imagen, usar placeholder.
+            if img:
+                filename = os.path.basename(img)
+                media_prefix = settings.MEDIA_URL.strip('/')
+                # Construir URL usando MEDIA_URL configurado (normalmente '/media/')
+                image_url = f"{base}/{media_prefix}/productos/{filename}"
+            else:
+                image_url = f"{base}/static/img/placeholder.png"
             output.append({
                 'ID_PRODUCTO': r['ID_PRODUCTO'],
                 'PROD_NOMBRE': r['PROD_NOMBRE'],
