@@ -424,6 +424,7 @@ def payment_sheet(request):
             'ephemeralKey': ek_secret,
             'customer': cust_id,
             'order_id': order.id,
+            'publishable_key': getattr(settings, 'STRIPE_PUBLISHABLE_KEY', None),
         })
     except Exception as e:
         logger = __import__('logging').getLogger('django.request')
@@ -460,3 +461,45 @@ def stripe_webhook(request):
                 pass
 
     return HttpResponse(status=200)
+
+
+# Endpoint to confirm a PaymentIntent and mark the related order as paid
+@api_view(['POST'])
+@permission_classes([AllowAny])
+def confirm_payment_intent(request):
+    logger = __import__('logging').getLogger('django.request')
+    data = request.data or {}
+    payment_intent_id = data.get('payment_intent_id') or data.get('paymentIntentId')
+    order_id = data.get('order_id') or data.get('orderId')
+
+    # If order_id provided, try to load PAYMENT_INTENT_ID from DB
+    if not payment_intent_id and order_id:
+        try:
+            order = Order_Model.objects.get(pk=order_id)
+            payment_intent_id = getattr(order, 'PAYMENT_INTENT_ID', None)
+        except Order_Model.DoesNotExist:
+            return Response({'detail': 'Order not found'}, status=status.HTTP_404_NOT_FOUND)
+
+    if not payment_intent_id:
+        return Response({'detail': 'payment_intent_id or order_id required'}, status=status.HTTP_400_BAD_REQUEST)
+
+    try:
+        intent = stripe.PaymentIntent.retrieve(payment_intent_id)
+    except Exception as e:
+        logger.exception('Error retrieving PaymentIntent %s', payment_intent_id)
+        return Response({'detail': 'Error retrieving PaymentIntent', 'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    status_str = getattr(intent, 'status', intent.get('status') if isinstance(intent, dict) else None)
+
+    if status_str == 'succeeded':
+        # mark order(s) that reference this payment_intent as paid
+        try:
+            orders = Order_Model.objects.filter(PAYMENT_INTENT_ID=payment_intent_id)
+            for o in orders:
+                o.PAID = True
+                o.save()
+        except Exception:
+            logger.exception('Failed to mark order paid for payment_intent %s', payment_intent_id)
+        return Response({'paid': True, 'status': status_str})
+
+    return Response({'paid': False, 'status': status_str})
