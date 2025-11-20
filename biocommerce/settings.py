@@ -166,3 +166,9 @@ REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 20,
 }
+
+import os
+# Clave del API de Gemini: usa variable de entorno si existe
+GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY", "AIzaSyCVHMMAg3z6TAnLyjdYbPj5SU0R3dKjLq8")
+# Modelo por defecto para el chatbot
+GEMINI_MODEL = os.environ.get("GEMINI_MODEL", "gemini-2.5-flash")
