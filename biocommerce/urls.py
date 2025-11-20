@@ -19,4 +19,7 @@ urlpatterns = [
     path('orders/', include('orders.urls', namespace='orders')),
     path('profile/', TemplateView.as_view(template_name='registration/profile.html'), name='profile'),
     path('chatbot/', include('chatbot.urls')),
+    # Web endpoint that users click from the password reset email.
+    # It shows the uid/token and offers a deep-link to the mobile app.
+    path('reset-password', TemplateView.as_view(template_name='reset_password.html'), name='reset_password'),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
