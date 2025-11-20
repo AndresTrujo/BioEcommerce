@@ -12,6 +12,8 @@ class Order_Model(models.Model):
     FULL_NAME = models.CharField(max_length=255)
     EMAIL = models.EmailField()
     ADDRESS = models.CharField(max_length=150)
+    TOTAL = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+    PAYMENT_INTENT_ID = models.CharField(max_length=255, null=True, blank=True)
     CREATED_AT = models.DateTimeField(auto_now_add=True)
     UPDATED_AT = models.DateTimeField(auto_now=True)
     PAID = models.BooleanField(default=False)

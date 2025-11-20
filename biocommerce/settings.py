@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 
 from pathlib import Path
 import dj_database_url
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -22,8 +23,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-b%a7m!qt!ij1hkxcqq95ld!^v+9%8!w5!19if^2!lvo)=$h6g#'
-STRIPE_PUBLISHABLE_KEY = "pk_live_51RVuzZE7HVY39HFDVd9jGQoYWWMQbtH3QMicvwCNdp16C8uN07Bt2rVsvvk8aBcIbSnhT3AvxAEDgEQ4JlcUnMY800f3jzgGP9"
-STRIPE_SECRET_KEY = "sk_test_51RVuzfCjeYG66sme6KHmhIJCiHiBNhmfpbaDfkn3NHdwkm6QyhMPStySVwwvuhGeyiV4NKyxhXSciTEURbdTpE007wLFnZvO"
+STRIPE_PUBLISHABLE_KEY = "pk_test_51RVuzfCjeYG66smeXRgEmy1Ox5o0gKHZJbsDrB8qZ6u9HfNCBYgB1s1E95n3aFKx4PVjo5DR3LAnOLsXaFj8nqjZ00Iicd2vqk"
+STRIPE_SECRET_KEY = "sk_test_51RVuzfCjeYG66sme6KHmhI9UJCiHiBNhmfpbaDfkn3NHdwkm6QyhMPStySVwwvuhGeyiV4NKyxhXSciTEURbdTpE007wLFnZvO"
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -140,6 +141,10 @@ STATICFILES_DIRS = [BASE_DIR / STATIC_URL]
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Deep link used to redirect back to the mobile app after a successful Stripe Checkout
+# You can override this via environment variable `MOBILE_DEEP_LINK_SUCCESS`
+MOBILE_DEEP_LINK_SUCCESS = os.getenv('MOBILE_DEEP_LINK_SUCCESS', 'bioapp://payment-success')
 
 
 MEDIA_URL = 'media/'

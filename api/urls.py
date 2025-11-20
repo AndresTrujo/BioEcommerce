@@ -9,6 +9,8 @@ from .views import (
     PasswordResetConfirmView,
     ChangePasswordView,
     create_order_checkout,
+    payment_sheet,
+    stripe_webhook,
 )
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
@@ -21,6 +23,8 @@ urlpatterns = [
     path('auth/password/reset/confirm/', PasswordResetConfirmView.as_view(), name='auth-password-reset-confirm'),
     path('auth/password/change/', ChangePasswordView.as_view(), name='auth-password-change'),
     path('orders/create-checkout/', create_order_checkout, name='create-order-checkout'),
+    path('payment-sheet/', payment_sheet, name='payment-sheet'),
+    path('stripe/webhook/', stripe_webhook, name='stripe-webhook'),
 
     # JWT token endpoints
     path('token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
