@@ -22,14 +22,24 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-b%a7m!qt!ij1hkxcqq95ld!^v+9%8!w5!19if^2!lvo)=$h6g#'
-STRIPE_PUBLISHABLE_KEY = "pk_test_51RVuzfCjeYG66smeXRgEmy1Ox5o0gKHZJbsDrB8qZ6u9HfNCBYgB1s1E95n3aFKx4PVjo5DR3LAnOLsXaFj8nqjZ00Iicd2vqk"
-STRIPE_SECRET_KEY = "sk_test_51RVuzfCjeYG66sme6KHmhI9UJCiHiBNhmfpbaDfkn3NHdwkm6QyhMPStySVwwvuhGeyiV4NKyxhXSciTEURbdTpE007wLFnZvO"
+# Read sensitive values from environment variables for production on Linux.
+SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'django-insecure-b%a7m!qt!ij1hkxcqq95ld!^v+9%8!w5!19if^2!lvo)=$h6g#')
+
+# Stripe keys (set these in the environment on the host)
+STRIPE_PUBLISHABLE_KEY = os.getenv('STRIPE_PUBLISHABLE_KEY', "pk_test_51RVuzfCjeYG66smeXRgEmy1Ox5o0gKHZJbsDrB8qZ6u9HfNCBYgB1s1E95n3aFKx4PVjo5DR3LAnOLsXaFj8nqjZ00Iicd2vqk")
+STRIPE_SECRET_KEY = os.getenv('STRIPE_SECRET_KEY', "sk_test_51RVuzfCjeYG66sme6KHmhI9UJCiHiBNhmfpbaDfkn3NHdwkm6QyhMPStySVwwvuhGeyiV4NKyxhXSciTEURbdTpE007wLFnZvO")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+# Set `DJANGO_DEBUG` environment variable to 'True' for development.
+DEBUG = os.getenv('DJANGO_DEBUG', 'False').lower() in ('1', 'true', 'yes')
 
-ALLOWED_HOSTS = ['18.188.141.97','joshuamarin.me', 'www.joshuamarin.me', '*']
+# Hosts allowed to serve the app. Provide a comma-separated list in ALLOWED_HOSTS.
+_hosts = os.getenv('ALLOWED_HOSTS', '*')
+if _hosts:
+    # split and strip, allow single '*' to remain
+    ALLOWED_HOSTS = [h.strip() for h in _hosts.split(',') if h.strip()]
+else:
+    ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -54,6 +64,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     "corsheaders.middleware.CorsMiddleware",
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -88,15 +99,15 @@ WSGI_APPLICATION = 'biocommerce.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
-DATABASE_URL = "postgresql://postgres.kcarooudfegtfwqhnwyw:S1steemas25@aws-1-us-east-2.pooler.supabase.com:5432/postgres"
+DATABASE_URL = os.getenv('DATABASE_URL', "postgresql://postgres.kcarooudfegtfwqhnwyw:S1steemas25@aws-1-us-east-2.pooler.supabase.com:5432/postgres")
 
 DATABASES = {
     'default': dj_database_url.parse(DATABASE_URL, conn_max_age=600, ssl_require=False)
 }
 
 DATABASES['default'].update({
-    'CONN_MAX_AGE': 0,   # cierra la conexión al final de cada request
-    'OPTIONS': {'sslmode': 'require'},  # si Supabase requiere SSL
+    'CONN_MAX_AGE': int(os.getenv('DJANGO_CONN_MAX_AGE', '0')),
+    'OPTIONS': {'sslmode': os.getenv('DATABASE_SSL_MODE', 'require')},
 })
 
 # Password validation
@@ -151,14 +162,17 @@ MEDIA_URL = 'media/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 MEDIA_ROOT = BASE_DIR / 'mediafiles'
+
+# Use WhiteNoise storage backend to serve static files on simple hosts.
+STATICFILES_STORAGE = os.getenv('STATICFILES_STORAGE', 'whitenoise.storage.CompressedStaticFilesStorage')
+
 # Asumiendo que tienes una URL llamada 'profile'
 LOGIN_REDIRECT_URL = 'products:landing_page'
 LOGOUT_REDIRECT_URL = 'login'  # Redirige de nuevo a la página de login
-ALLOWED_HOSTS = ['*']  # Permite todas las solicitudes de host
 
 
-CORS_ALLOW_ALL_ORIGINS = True
-CORS_ORIGIN_ALLOW_ALL = True
+CORS_ALLOW_ALL_ORIGINS = os.getenv('CORS_ALLOW_ALL_ORIGINS', 'True').lower() in ('1', 'true', 'yes')
+CORS_ORIGIN_ALLOW_ALL = CORS_ALLOW_ALL_ORIGINS
 
 REST_FRAMEWORK = {
    'DEFAULT_AUTHENTICATION_CLASSES': [
@@ -177,13 +191,16 @@ REST_FRAMEWORK = {
 #   EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 # For production use SMTP (example using Gmail / SMTP relay). Set these values in environment variables
 # and keep credentials out of source control.
-DEFAULT_FROM_EMAIL = 'no-reply@example.com'
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'stormblessedtrujo@gmail.com'  # set via env var
-EMAIL_HOST_PASSWORD = 'ewqu dpuq hfpg rlfv '  # set via env var
+DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL', 'no-reply@example.com')
+EMAIL_BACKEND = os.getenv('EMAIL_BACKEND', 'django.core.mail.backends.smtp.EmailBackend')
+EMAIL_HOST = os.getenv('EMAIL_HOST', 'smtp.gmail.com')
+EMAIL_PORT = int(os.getenv('EMAIL_PORT', '587'))
+EMAIL_USE_TLS = os.getenv('EMAIL_USE_TLS', 'True').lower() in ('1', 'true', 'yes')
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER', '')
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD', '')
+
+# If the app is behind a proxy (e.g. nginx) make sure to honor X-Forwarded-Proto
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 # Example (PowerShell) to set env vars for local development before running Django:
 # $env:EMAIL_HOST_USER = 'your-smtp-user'
