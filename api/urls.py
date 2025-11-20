@@ -12,7 +12,8 @@ from .views import (
     payment_sheet,
     stripe_webhook,
 )
-from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
+from rest_framework_simplejwt.views import TokenRefreshView
+from .views import EmailTokenObtainPairView
 
 urlpatterns = [
     path('products/', ProductoView.as_view(), name='producto-list'),
@@ -27,7 +28,7 @@ urlpatterns = [
     path('stripe/webhook/', stripe_webhook, name='stripe-webhook'),
 
     # JWT token endpoints
-    path('token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('token/', EmailTokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 
     # User CRUD (admin/self)

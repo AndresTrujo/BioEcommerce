@@ -21,12 +21,36 @@ from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse, JsonResponse
 import json
 from decimal import Decimal
+from rest_framework_simplejwt.tokens import RefreshToken
 
 # configure stripe with secret key from settings
 stripe.api_key = getattr(settings, 'STRIPE_SECRET_KEY', None)
 
 User = get_user_model()
 token_generator = PasswordResetTokenGenerator()
+
+
+# Token endpoint that accepts email + password and returns refresh/access tokens
+class EmailTokenObtainPairView(APIView):
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        email = request.data.get('email')
+        password = request.data.get('password')
+        if not email or not password:
+            return Response({'detail': 'Email and password required'}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            user = User.objects.get(email__iexact=email)
+        except User.DoesNotExist:
+            return Response({'detail': 'No active account found with the given credentials'}, status=status.HTTP_401_UNAUTHORIZED)
+
+        if not user.check_password(password):
+            return Response({'detail': 'No active account found with the given credentials'}, status=status.HTTP_401_UNAUTHORIZED)
+
+        # create JWT tokens
+        refresh = RefreshToken.for_user(user)
+        return Response({'refresh': str(refresh), 'access': str(refresh.access_token)})
 
 
 # Product list API (existing)
