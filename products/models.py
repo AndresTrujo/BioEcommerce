@@ -28,6 +28,8 @@ class Producto(models.Model):
     PROD_IMAGEN = models.ImageField(upload_to='productos/', null=True, blank=True)
     PROD_CREADO = models.DateTimeField(auto_now_add=True)
     PROD_MODIFICADO = models.DateTimeField(auto_now=True)
+    PROD_DESCRIPCION_DESC = models.IntegerField(blank=True, null=True)
+    STOCK_PROD = models.IntegerField(blank=True, null=True,default=50)
 
     def __str__(self):
         return self.PROD_NOMBRE
