@@ -60,7 +60,12 @@ class ProductoView(APIView):
         qs = Producto.objects.select_related('PROD_CATEGORIA').all()
         rows = qs.values('ID_PRODUCTO', 'PROD_NOMBRE', 'PROD_PRECIO_PUB', 'PROD_CATEGORIA__CAT_NOMBRE', 'PROD_IMAGEN', 'STOCK_PROD', 'PROD_DESCRIPCION_DESC')
         output = []
+        # Build absolute base URL and force https scheme so the API
+        # always returns image URLs with https:// (avoids returning http://
+        # when behind proxies or when request.is_secure() is unreliable).
         base = request.build_absolute_uri('/')[:-1]
+        if base.startswith('http://'):
+            base = 'https://' + base.split('://', 1)[1]
         for r in rows:
             img = r.get('PROD_IMAGEN')
             if img:
